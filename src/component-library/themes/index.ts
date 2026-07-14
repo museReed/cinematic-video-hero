@@ -61,8 +61,8 @@ const studio: Theme = {
   '--primary-foreground': '#FFFFFF',
   '--inverted': '#000000',
   '--inverted-foreground': '#FFFFFF',
-  '--font-display': "'PP Mondwest', 'Instrument Serif', serif",
-  '--font-body': "'PP Neue Montreal', Inter, ui-sans-serif, system-ui, sans-serif",
+  '--font-display': "'Instrument Serif', serif",
+  '--font-body': "Inter, ui-sans-serif, system-ui, sans-serif",
   '--fs-display': 'clamp(3rem, 7vw, 7rem)',
   '--fs-heading': 'clamp(2.25rem, 4vw, 4rem)',
   '--fs-body': '1rem',
@@ -114,9 +114,8 @@ export function buildThemeCss() {
 
 /** Webfont stylesheets each theme depends on; PageRenderer injects these on mount. */
 export const THEME_FONT_CSS_URLS: Record<ThemeId, string[]> = {
-  studio: [
-    'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap',
-  ],
+  // studio fonts are self-hosted via @font-face in src/index.css — no external stylesheet needed.
+  studio: [],
   claude2code: [
     'https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap',
   ],
