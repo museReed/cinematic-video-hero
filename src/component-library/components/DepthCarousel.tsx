@@ -33,7 +33,7 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden font-body text-inverted-foreground transition-[background-color] duration-[650ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+      className="relative min-h-screen overflow-hidden font-body text-inverted-foreground transition-[background-color] duration-[var(--motion-duration-slow)] ease-[var(--motion-ease-standard)]"
       style={{ backgroundColor: images[active].bg }}
     >
       <h2 className="absolute inset-x-0 top-[12%] z-[1] px-6 text-center font-display text-heading font-black uppercase opacity-80">
@@ -44,7 +44,7 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
         return (
           <div
             key={image.src}
-            className={`absolute aspect-square transition-all duration-[650ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${classesByRole[role]}`}
+            className={`absolute aspect-square transition-all duration-[var(--motion-duration-slow)] ease-[var(--motion-ease-standard)] ${classesByRole[role]}`}
           >
             <img src={image.src} alt="" draggable={false} className="h-full w-full object-contain object-bottom" />
           </div>
