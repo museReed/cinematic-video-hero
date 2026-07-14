@@ -1,6 +1,7 @@
 import { Check } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { PricingCardProps } from '../schemas'
+import { MOTION } from '../themes'
 
 export function PricingCard({ title, price, unit, features, dark, ctaLabel }: PricingCardProps) {
   return (
@@ -33,7 +34,13 @@ export function PricingSection({ heading, cards }: { heading: string; cards: Pri
       <h2 className="mx-auto mb-12 max-w-6xl font-display text-heading">{heading}</h2>
       <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-2">
         {cards.map((card, index) => (
-          <motion.div key={`${card.title}-${index}`} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: (index + 1) * 0.1 }}>
+          <motion.div
+            key={`${card.title}-${index}`}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: (index + 1) * MOTION.staggerStep }}
+          >
             <PricingCard {...card} />
           </motion.div>
         ))}

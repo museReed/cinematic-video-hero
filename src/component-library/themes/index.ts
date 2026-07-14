@@ -2,6 +2,14 @@ import claude2codeDesignTokens from './claude2code.design-tokens.json'
 
 export type ThemeId = 'studio' | 'claude2code'
 
+export const MOTION = {
+  durationBase: 0.7,
+  durationSlow: 0.65,
+  staggerStep: 0.1,
+  easeStandard: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  easeLinear: 'linear',
+} as const
+
 export const THEME_VARIABLES = [
   '--background',
   '--foreground',
@@ -19,6 +27,11 @@ export const THEME_VARIABLES = [
   '--fs-heading',
   '--fs-body',
   '--fs-caption',
+  '--motion-duration-base',
+  '--motion-duration-slow',
+  '--motion-stagger-step',
+  '--motion-ease-standard',
+  '--motion-ease-linear',
 ] as const
 
 type Theme = Record<(typeof THEME_VARIABLES)[number], string>
@@ -54,6 +67,11 @@ const studio: Theme = {
   '--fs-heading': 'clamp(2.25rem, 4vw, 4rem)',
   '--fs-body': '1rem',
   '--fs-caption': '0.75rem',
+  '--motion-duration-base': `${MOTION.durationBase * 1000}ms`,
+  '--motion-duration-slow': `${MOTION.durationSlow * 1000}ms`,
+  '--motion-stagger-step': `${MOTION.staggerStep * 1000}ms`,
+  '--motion-ease-standard': MOTION.easeStandard,
+  '--motion-ease-linear': MOTION.easeLinear,
 }
 
 const claude2code: Theme = {
@@ -73,6 +91,11 @@ const claude2code: Theme = {
   '--fs-heading': 'clamp(1.75rem, 3vw, 2.75rem)',
   '--fs-body': '0.9375rem',
   '--fs-caption': '0.8125rem',
+  '--motion-duration-base': `${MOTION.durationBase * 1000}ms`,
+  '--motion-duration-slow': `${MOTION.durationSlow * 1000}ms`,
+  '--motion-stagger-step': `${MOTION.staggerStep * 1000}ms`,
+  '--motion-ease-standard': MOTION.easeStandard,
+  '--motion-ease-linear': MOTION.easeLinear,
 }
 
 export const THEMES: Record<ThemeId, Theme> = {

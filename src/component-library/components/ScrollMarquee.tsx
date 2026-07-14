@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { ScrollMarqueeProps } from '../schemas'
+import { MOTION } from '../themes'
 
 const durationBySpeed = { slow: 24, normal: 14, fast: 8 } as const
 
@@ -13,7 +14,7 @@ export function ScrollMarquee({ text, repeat, speed }: ScrollMarqueeProps) {
           key={direction}
           className="flex w-max gap-8 whitespace-nowrap"
           animate={{ x: direction === 1 ? ['-12%', '0%'] : ['0%', '-12%'] }}
-          transition={{ duration: durationBySpeed[speed], repeat: Infinity, repeatType: 'mirror', ease: 'linear' }}
+          transition={{ duration: durationBySpeed[speed], repeat: Infinity, repeatType: 'mirror', ease: MOTION.easeLinear }}
         >
           {labels.map((key) => (
             <span key={`${direction}-${key}`} className="font-display text-display font-black uppercase tracking-tight">
