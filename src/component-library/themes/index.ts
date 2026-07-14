@@ -64,3 +64,13 @@ export const THEMES: Record<ThemeId, Record<string, string>> = {
   studio,
   claude2code,
 }
+
+/** Webfont stylesheets each theme depends on; PageRenderer injects these on mount. */
+export const THEME_FONT_CSS_URLS: Record<ThemeId, string[]> = {
+  studio: [
+    'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap',
+  ],
+  claude2code: [
+    'https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap',
+  ],
+}
