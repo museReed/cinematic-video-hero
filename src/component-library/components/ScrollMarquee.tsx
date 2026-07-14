@@ -7,10 +7,7 @@ export function ScrollMarquee({ text, repeat, speed }: ScrollMarqueeProps) {
   const labels = Array.from({ length: repeat }, (_, index) => `${text}-${index}`)
 
   return (
-    <section
-      className="flex min-h-screen flex-col justify-center gap-8 overflow-hidden py-20"
-      style={{ backgroundColor: 'var(--ck-color-dark-surface)', color: 'var(--ck-color-dark-ink)', fontFamily: 'var(--ck-font-body)' }}
-    >
+    <section className="flex min-h-screen flex-col justify-center gap-8 overflow-hidden bg-inverted py-20 font-body text-inverted-foreground">
       {[1, -1].map((direction) => (
         <motion.div
           key={direction}
@@ -19,7 +16,7 @@ export function ScrollMarquee({ text, repeat, speed }: ScrollMarqueeProps) {
           transition={{ duration: durationBySpeed[speed], repeat: Infinity, repeatType: 'mirror', ease: 'linear' }}
         >
           {labels.map((key) => (
-            <span key={`${direction}-${key}`} className="text-6xl font-black uppercase tracking-tight md:text-9xl" style={{ fontFamily: 'var(--ck-font-display)' }}>
+            <span key={`${direction}-${key}`} className="font-display text-display font-black uppercase tracking-tight">
               {text}
             </span>
           ))}

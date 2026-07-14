@@ -3,17 +3,22 @@ import claude2codeDesignTokens from './claude2code.design-tokens.json'
 export type ThemeId = 'studio' | 'claude2code'
 
 export const THEME_VARIABLES = [
-  '--ck-color-bg',
-  '--ck-color-surface',
-  '--ck-color-ink',
-  '--ck-color-text',
-  '--ck-color-muted',
-  '--ck-color-accent',
-  '--ck-color-accent-contrast',
-  '--ck-color-dark-surface',
-  '--ck-color-dark-ink',
-  '--ck-font-display',
-  '--ck-font-body',
+  '--background',
+  '--foreground',
+  '--card',
+  '--card-foreground',
+  '--muted',
+  '--muted-foreground',
+  '--primary',
+  '--primary-foreground',
+  '--inverted',
+  '--inverted-foreground',
+  '--font-display',
+  '--font-body',
+  '--fs-display',
+  '--fs-heading',
+  '--fs-body',
+  '--fs-caption',
 ] as const
 
 type Theme = Record<(typeof THEME_VARIABLES)[number], string>
@@ -33,36 +38,55 @@ function resolveColor(value: string) {
 }
 
 const studio: Theme = {
-  '--ck-color-bg': '#F6FCFF',
-  '--ck-color-surface': '#FFFFFF',
-  '--ck-color-ink': '#051A24',
-  '--ck-color-text': '#0D212C',
-  '--ck-color-muted': '#E0EBF0',
-  '--ck-color-accent': '#051A24',
-  '--ck-color-accent-contrast': '#FFFFFF',
-  '--ck-color-dark-surface': '#000000',
-  '--ck-color-dark-ink': '#FFFFFF',
-  '--ck-font-display': "'PP Mondwest', 'Instrument Serif', serif",
-  '--ck-font-body': "'PP Neue Montreal', Inter, ui-sans-serif, system-ui, sans-serif",
+  '--background': '#F6FCFF',
+  '--foreground': '#051A24',
+  '--card': '#FFFFFF',
+  '--card-foreground': '#0D212C',
+  '--muted': '#E0EBF0',
+  '--muted-foreground': '#0D212C',
+  '--primary': '#051A24',
+  '--primary-foreground': '#FFFFFF',
+  '--inverted': '#000000',
+  '--inverted-foreground': '#FFFFFF',
+  '--font-display': "'PP Mondwest', 'Instrument Serif', serif",
+  '--font-body': "'PP Neue Montreal', Inter, ui-sans-serif, system-ui, sans-serif",
+  '--fs-display': 'clamp(3rem, 7vw, 7rem)',
+  '--fs-heading': 'clamp(2.25rem, 4vw, 4rem)',
+  '--fs-body': '1rem',
+  '--fs-caption': '0.75rem',
 }
 
 const claude2code: Theme = {
-  '--ck-color-bg': resolveColor(claude2codeDesignTokens.semantic.color.bg),
-  '--ck-color-surface': resolveColor(claude2codeDesignTokens.semantic.color['bg-elevated']),
-  '--ck-color-ink': resolveColor(claude2codeDesignTokens.semantic.color['text-strong']),
-  '--ck-color-text': resolveColor(claude2codeDesignTokens.semantic.color.text),
-  '--ck-color-muted': resolveColor(claude2codeDesignTokens.semantic.color['text-muted']),
-  '--ck-color-accent': resolveColor(claude2codeDesignTokens.semantic.color.accent),
-  '--ck-color-accent-contrast': resolveColor('neutral.1'),
-  '--ck-color-dark-surface': resolveColor(claude2codeDesignTokens.semantic.terminal.bg),
-  '--ck-color-dark-ink': resolveColor(claude2codeDesignTokens.semantic.terminal.ink),
-  '--ck-font-display': claude2codeDesignTokens.font.serif,
-  '--ck-font-body': claude2codeDesignTokens.font.sans,
+  '--background': resolveColor(claude2codeDesignTokens.semantic.color.bg),
+  '--foreground': resolveColor(claude2codeDesignTokens.semantic.color['text-strong']),
+  '--card': resolveColor(claude2codeDesignTokens.semantic.color['bg-elevated']),
+  '--card-foreground': resolveColor(claude2codeDesignTokens.semantic.color.text),
+  '--muted': resolveColor(claude2codeDesignTokens.semantic.color['bg-inset']),
+  '--muted-foreground': resolveColor(claude2codeDesignTokens.semantic.color['text-muted']),
+  '--primary': resolveColor(claude2codeDesignTokens.semantic.color.accent),
+  '--primary-foreground': resolveColor('neutral.1'),
+  '--inverted': resolveColor(claude2codeDesignTokens.semantic.terminal.bg),
+  '--inverted-foreground': resolveColor(claude2codeDesignTokens.semantic.terminal.ink),
+  '--font-display': claude2codeDesignTokens.font.serif,
+  '--font-body': claude2codeDesignTokens.font.sans,
+  '--fs-display': 'clamp(2.25rem, 5vw, 4.5rem)',
+  '--fs-heading': 'clamp(1.75rem, 3vw, 2.75rem)',
+  '--fs-body': '0.9375rem',
+  '--fs-caption': '0.8125rem',
 }
 
-export const THEMES: Record<ThemeId, Record<string, string>> = {
+export const THEMES: Record<ThemeId, Theme> = {
   studio,
   claude2code,
+}
+
+export function buildThemeCss() {
+  return Object.entries(THEMES)
+    .map(
+      ([theme, variables]) =>
+        `[data-theme='${theme}'] {\n${THEME_VARIABLES.map((variable) => `  ${variable}: ${variables[variable]};`).join('\n')}\n}`,
+    )
+    .join('\n\n')
 }
 
 /** Webfont stylesheets each theme depends on; PageRenderer injects these on mount. */

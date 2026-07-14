@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import type { CSSProperties } from 'react'
 import type { DepthCarouselProps } from '../schemas'
 
-const stylesByRole: Record<'center' | 'left' | 'right' | 'back', CSSProperties> = {
-  center: { left: '50%', height: '72%', bottom: '0%', transform: 'translateX(-50%) scale(1.15)', filter: 'blur(0)', opacity: 1, zIndex: 20 },
-  left: { left: '18%', height: '42%', bottom: '7%', transform: 'translateX(-50%)', filter: 'blur(1px)', opacity: 0.82, zIndex: 10 },
-  right: { left: '82%', height: '42%', bottom: '7%', transform: 'translateX(-50%)', filter: 'blur(1px)', opacity: 0.82, zIndex: 10 },
-  back: { left: '50%', height: '30%', bottom: '9%', transform: 'translateX(-50%)', filter: 'blur(2px)', opacity: 0.9, zIndex: 5 },
+const classesByRole = {
+  center: 'bottom-0 left-1/2 z-20 h-[72%] -translate-x-1/2 scale-[1.15] opacity-100 blur-none',
+  left: 'bottom-[7%] left-[18%] z-10 h-[42%] -translate-x-1/2 opacity-[0.82] blur-[1px]',
+  right: 'bottom-[7%] left-[82%] z-10 h-[42%] -translate-x-1/2 opacity-[0.82] blur-[1px]',
+  back: 'bottom-[9%] left-1/2 z-[5] h-[30%] -translate-x-1/2 opacity-90 blur-[2px]',
 }
 
 export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselProps) {
@@ -34,13 +33,10 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
 
   return (
     <section
-      className="relative min-h-screen overflow-hidden"
-      style={{ backgroundColor: images[active].bg, fontFamily: 'var(--ck-font-body)', transition: 'background-color 650ms cubic-bezier(0.4,0,0.2,1)' }}
+      className="relative min-h-screen overflow-hidden font-body text-inverted-foreground transition-[background-color] duration-[650ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+      style={{ backgroundColor: images[active].bg }}
     >
-      <h2
-        className="absolute inset-x-0 top-[12%] z-[1] px-6 text-center text-6xl font-black uppercase leading-none opacity-80 md:text-8xl"
-        style={{ color: 'var(--ck-color-dark-ink)', fontFamily: 'var(--ck-font-display)' }}
-      >
+      <h2 className="absolute inset-x-0 top-[12%] z-[1] px-6 text-center font-display text-heading font-black uppercase opacity-80">
         {title}
       </h2>
       {images.map((image, index) => {
@@ -48,11 +44,7 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
         return (
           <div
             key={image.src}
-            className="absolute aspect-square"
-            style={{
-              ...stylesByRole[role],
-              transition: 'transform 650ms cubic-bezier(0.4,0,0.2,1), filter 650ms cubic-bezier(0.4,0,0.2,1), opacity 650ms cubic-bezier(0.4,0,0.2,1), left 650ms cubic-bezier(0.4,0,0.2,1), height 650ms cubic-bezier(0.4,0,0.2,1), bottom 650ms cubic-bezier(0.4,0,0.2,1)',
-            }}
+            className={`absolute aspect-square transition-all duration-[650ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${classesByRole[role]}`}
           >
             <img src={image.src} alt="" draggable={false} className="h-full w-full object-contain object-bottom" />
           </div>
@@ -61,8 +53,7 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
       <button
         type="button"
         onClick={() => setActive((current) => (current + 1) % images.length)}
-        className="absolute bottom-8 right-8 z-30 rounded-full border px-5 py-3 text-xs uppercase tracking-widest backdrop-blur"
-        style={{ backgroundColor: 'var(--ck-color-dark-surface)', borderColor: 'var(--ck-color-dark-ink)', color: 'var(--ck-color-dark-ink)' }}
+        className="absolute bottom-8 right-8 z-30 rounded-full bg-primary px-5 py-3 text-caption uppercase tracking-widest text-primary-foreground backdrop-blur"
         aria-label="Show next carousel image"
       >
         Next

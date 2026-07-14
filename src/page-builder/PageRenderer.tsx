@@ -1,7 +1,7 @@
-import { createElement, useEffect, type ComponentType, type CSSProperties } from 'react'
+import { createElement, useEffect, type ComponentType } from 'react'
 import { componentRegistry } from '../component-library/registry'
 import type { PricingCardProps } from '../component-library/schemas'
-import { THEMES, THEME_FONT_CSS_URLS } from '../component-library/tokens'
+import { buildThemeCss, THEME_FONT_CSS_URLS } from '../component-library/tokens'
 import type { PageSpec } from './PageSpec'
 import { validatePageSpec } from './validatePageSpec'
 
@@ -21,14 +21,27 @@ function useThemeFonts(theme: PageSpec['theme']) {
   }, [theme])
 }
 
+function useThemeStyles() {
+  useEffect(() => {
+    if (document.getElementById('ck-theme-styles')) return
+
+    const style = document.createElement('style')
+    style.id = 'ck-theme-styles'
+    style.textContent = buildThemeCss()
+    document.head.appendChild(style)
+    return () => { style.remove() }
+  }, [])
+}
+
 export function PageRenderer({ spec }: { spec: PageSpec }) {
   const result = validatePageSpec(spec)
   if (!result.ok) throw new Error(`PageRenderer received an invalid PageSpec: ${result.errors.join('; ')}`)
 
   useThemeFonts(result.spec.theme)
+  useThemeStyles()
 
   return (
-    <main style={THEMES[result.spec.theme] as CSSProperties}>
+    <main data-theme={result.spec.theme}>
       {result.spec.sections.map((section) => {
         const entry = componentRegistry[section.component]
         const Component = entry.component as ComponentType<Record<string, unknown>>

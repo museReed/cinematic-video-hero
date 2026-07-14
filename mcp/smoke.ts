@@ -35,9 +35,11 @@ try {
 
   const tokenResult = await client.callTool({ name: 'listDesignTokens', arguments: {} })
   assert(hasContent(tokenResult), 'listDesignTokens returned no content')
-  const tokens = JSON.parse(textContent(tokenResult)) as { themes?: Record<string, unknown> }
+  const tokens = JSON.parse(textContent(tokenResult)) as { themes?: Record<string, Record<string, string>> }
   assert(tokens.themes?.studio, 'listDesignTokens did not return the studio theme')
   assert(tokens.themes?.claude2code, 'listDesignTokens did not return the claude2code theme')
+  assert(tokens.themes.studio['--primary'], 'listDesignTokens did not return --primary')
+  assert(tokens.themes.studio['--fs-display'], 'listDesignTokens did not return --fs-display')
 
   const unknownResult = await client.callTool({ name: 'getComponentSchema', arguments: { componentId: 'unknown.component' } })
   assert(unknownResult.isError === true, 'Unknown componentId did not return an MCP error')
