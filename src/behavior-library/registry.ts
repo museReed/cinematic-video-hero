@@ -1,5 +1,6 @@
 import { createElement, type ReactNode } from 'react'
 import type { ZodType } from 'zod/v3'
+import { PointerOverlay, ScrollDirector } from './page-renderers'
 import { InviewEntrance, PointerMagnet } from './renderers'
 import {
   inviewEntrancePropsSchema,
@@ -7,7 +8,7 @@ import {
   pointerOverlayPropsSchema,
   scrollDirectorPropsSchema,
 } from './schemas'
-import type { InviewEntranceProps, PointerMagnetProps } from './schemas'
+import type { InviewEntranceProps, PointerMagnetProps, PointerOverlayProps, ScrollDirectorProps } from './schemas'
 
 // A behavior is a wrapper/interaction contract applied *to* content, not a page section itself.
 // - scope 'section': attached to one section via `section.enhancements` (寫法 A). `render` wraps that section's children.
@@ -30,7 +31,7 @@ type SectionBehaviorEntry = BehaviorMeta & {
 
 type PageBehaviorEntry = BehaviorMeta & {
   scope: 'page'
-  render: (props: unknown) => ReactNode
+  render: (props: unknown) => (children: ReactNode) => ReactNode
 }
 
 export type BehaviorEntry = SectionBehaviorEntry | PageBehaviorEntry
@@ -60,8 +61,7 @@ export const behaviorRegistry = {
     description: 'Page-wide editorial pointer feedback: custom cursor or motion trail.',
     useWhen: ['The whole page wants a custom cursor or mouse trail (fine pointers)'],
     avoidWhen: ['Coarse pointers (auto-disabled)', 'Reduced-motion users'],
-    // B7: render a fixed overlay above all sections.
-    render: () => null,
+    render: (props) => (children) => createElement(PointerOverlay, { ...(props as PointerOverlayProps), children }),
   },
   'scroll-director': {
     scope: 'page',
@@ -69,8 +69,7 @@ export const behaviorRegistry = {
     description: 'Single scroll-progress owner deriving intro/archive/exit phases for multiple sections.',
     useWhen: ['The whole page needs one scroll orchestration across sections, including an outro'],
     avoidWhen: ['Sections already own independent scroll behavior'],
-    // B7: own a single scrollYProgress and distribute phase progress to sections.
-    render: () => null,
+    render: (props) => (children) => createElement(ScrollDirector, { ...(props as ScrollDirectorProps), children }),
   },
 } as const satisfies Record<string, BehaviorEntry>
 

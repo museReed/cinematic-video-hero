@@ -41,7 +41,7 @@ export function PageRenderer({ spec }: { spec: PageSpec }) {
   useThemeFonts(result.spec.theme)
   useThemeStyles()
 
-  return (
+  const content = (
     <main data-theme={result.spec.theme}>
       {result.spec.sections.map((section) => {
         const entry = componentRegistry[section.component]
@@ -70,4 +70,11 @@ export function PageRenderer({ spec }: { spec: PageSpec }) {
       })}
     </main>
   )
+
+  if (!result.spec.behaviors) return content
+
+  return result.spec.behaviors.reduce<ReactNode>((wrapped, pageBehavior) => {
+    const behavior = behaviorRegistry[pageBehavior.component] as Extract<BehaviorEntry, { scope: 'page' }>
+    return behavior.render(pageBehavior.props)(wrapped)
+  }, content)
 }
