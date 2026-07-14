@@ -1,4 +1,5 @@
-import { createElement, useEffect, type ComponentType } from 'react'
+import { cloneElement, createElement, isValidElement, useEffect, type ComponentType, type ReactNode } from 'react'
+import { behaviorRegistry, type BehaviorEntry } from '../behavior-library/registry'
 import { componentRegistry } from '../component-library/registry'
 import type { FeatureCardProps, PricingCardProps } from '../component-library/schemas'
 import { buildThemeCss, THEME_FONT_CSS_URLS } from '../component-library/tokens'
@@ -46,18 +47,26 @@ export function PageRenderer({ spec }: { spec: PageSpec }) {
         const entry = componentRegistry[section.component]
         const Component = entry.component as ComponentType<Record<string, unknown>>
         const props = section.props as Record<string, unknown>
+        let element: ReactNode
 
         if (section.component === 'studio.pricing') {
           const cards = section.children?.map((child) => child.props as PricingCardProps) ?? []
-          return createElement(Component, { key: section.id, ...props, cards })
-        }
-
-        if (section.component === 'section.feature-grid') {
+          element = createElement(Component, { key: section.id, ...props, cards })
+        } else if (section.component === 'section.feature-grid') {
           const cards = section.children?.map((child) => child.props as FeatureCardProps) ?? []
-          return createElement(Component, { key: section.id, ...props, cards })
+          element = createElement(Component, { key: section.id, ...props, cards })
+        } else {
+          element = createElement(Component, { key: section.id, ...props })
         }
 
-        return createElement(Component, { key: section.id, ...props })
+        if (!section.enhancements) return element
+
+        const enhanced = section.enhancements.reduce<ReactNode>((wrapped, enhancement) => {
+          const behavior = behaviorRegistry[enhancement.component] as Extract<BehaviorEntry, { scope: 'section' }>
+          return behavior.render(enhancement.props)(wrapped)
+        }, element)
+
+        return isValidElement(enhanced) ? cloneElement(enhanced, { key: section.id }) : enhanced
       })}
     </main>
   )

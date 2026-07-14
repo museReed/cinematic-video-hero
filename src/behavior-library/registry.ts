@@ -1,11 +1,13 @@
-import type { ReactNode } from 'react'
+import { createElement, type ReactNode } from 'react'
 import type { ZodType } from 'zod/v3'
+import { InviewEntrance, PointerMagnet } from './renderers'
 import {
   inviewEntrancePropsSchema,
   pointerMagnetPropsSchema,
   pointerOverlayPropsSchema,
   scrollDirectorPropsSchema,
 } from './schemas'
+import type { InviewEntranceProps, PointerMagnetProps } from './schemas'
 
 // A behavior is a wrapper/interaction contract applied *to* content, not a page section itself.
 // - scope 'section': attached to one section via `section.enhancements` (寫法 A). `render` wraps that section's children.
@@ -41,7 +43,7 @@ export const behaviorRegistry = {
     useWhen: ['A section should fade in as it enters the viewport'],
     avoidWhen: ['The section already owns its own entrance animation'],
     // B6: wrap children in a whileInView motion contract.
-    render: () => (children) => children,
+    render: (props) => (children) => createElement(InviewEntrance, { ...(props as InviewEntranceProps), children }),
   },
   'pointer-magnet': {
     scope: 'section',
@@ -50,7 +52,7 @@ export const behaviorRegistry = {
     useWhen: ['A portrait or CTA wants magnetic pull on fine pointers'],
     avoidWhen: ['Coarse pointers (auto-disabled)', 'Large full-width blocks'],
     // B6: attach pointer-move translate3d handlers to the wrapped element.
-    render: () => (children) => children,
+    render: (props) => (children) => createElement(PointerMagnet, { ...(props as PointerMagnetProps), children }),
   },
   'pointer-overlay': {
     scope: 'page',
