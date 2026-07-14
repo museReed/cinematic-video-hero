@@ -1,4 +1,5 @@
 import type { ComponentId } from '../component-library/registry'
+import type { ThemeId } from '../component-library/tokens'
 
 export type PageSpecChild = {
   component: ComponentId
@@ -14,6 +15,6 @@ export type PageSpecSection = {
 
 export type PageSpec = {
   version: 1
-  theme: 'spike'
+  theme: ThemeId
   sections: PageSpecSection[]
 }

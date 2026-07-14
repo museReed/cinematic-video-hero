@@ -1,6 +1,7 @@
-import { createElement, type ComponentType } from 'react'
+import { createElement, type ComponentType, type CSSProperties } from 'react'
 import { componentRegistry } from '../component-library/registry'
 import type { PricingCardProps } from '../component-library/schemas'
+import { THEMES } from '../component-library/tokens'
 import type { PageSpec } from './PageSpec'
 import { validatePageSpec } from './validatePageSpec'
 
@@ -9,7 +10,7 @@ export function PageRenderer({ spec }: { spec: PageSpec }) {
   if (!result.ok) throw new Error(`PageRenderer received an invalid PageSpec: ${result.errors.join('; ')}`)
 
   return (
-    <main>
+    <main style={THEMES[result.spec.theme] as CSSProperties}>
       {result.spec.sections.map((section) => {
         const entry = componentRegistry[section.component]
         const Component = entry.component as ComponentType<Record<string, unknown>>

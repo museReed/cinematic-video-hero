@@ -9,6 +9,11 @@ function hasContent(result: Awaited<ReturnType<Client['callTool']>>) {
   return Array.isArray(result.content) && result.content.length > 0
 }
 
+function textContent(result: Awaited<ReturnType<Client['callTool']>>) {
+  const content = result.content?.[0]
+  return content?.type === 'text' ? content.text : ''
+}
+
 const transport = new StdioClientTransport({
   command: process.execPath,
   args: ['--import', 'tsx', 'mcp/server.ts'],
@@ -30,6 +35,9 @@ try {
 
   const tokenResult = await client.callTool({ name: 'listDesignTokens', arguments: {} })
   assert(hasContent(tokenResult), 'listDesignTokens returned no content')
+  const tokens = JSON.parse(textContent(tokenResult)) as { themes?: Record<string, unknown> }
+  assert(tokens.themes?.studio, 'listDesignTokens did not return the studio theme')
+  assert(tokens.themes?.claude2code, 'listDesignTokens did not return the claude2code theme')
 
   const unknownResult = await client.callTool({ name: 'getComponentSchema', arguments: { componentId: 'unknown.component' } })
   assert(unknownResult.isError === true, 'Unknown componentId did not return an MCP error')

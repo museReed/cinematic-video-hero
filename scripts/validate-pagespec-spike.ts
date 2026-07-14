@@ -6,10 +6,19 @@ type DraftSection = { id: string; component: string; props: Record<string, unkno
 type DraftSpec = { version: number; theme: string; sections: DraftSection[] }
 
 const sample = JSON.parse(readFileSync(new URL('../generated-pages/sample.json', import.meta.url), 'utf8')) as DraftSpec
+const claude2codeSample = JSON.parse(readFileSync(new URL('../generated-pages/sample-claude2code.json', import.meta.url), 'utf8')) as DraftSpec
 const cloneSample = () => structuredClone(sample)
 
 const cases: Array<{ name: string; expected: boolean; build: () => unknown }> = [
   { name: 'sample.json is valid', expected: true, build: cloneSample },
+  { name: 'sample-claude2code.json is valid', expected: true, build: () => structuredClone(claude2codeSample) },
+  {
+    name: 'unregistered theme is rejected', expected: false, build: () => {
+      const spec = cloneSample()
+      spec.theme = 'neon'
+      return spec
+    },
+  },
   {
     name: 'unknown component id is rejected', expected: false, build: () => {
       const spec = cloneSample()

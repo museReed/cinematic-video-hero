@@ -21,7 +21,7 @@ const sectionSchema = z
 const pageSpecSchema = z
   .object({
     version: z.literal(1),
-    theme: z.literal('spike'),
+    theme: z.enum(['studio', 'claude2code']),
     sections: z.array(sectionSchema).min(1).max(10),
   })
   .strict()

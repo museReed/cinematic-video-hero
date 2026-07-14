@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import type { VideoLoopProps } from '../schemas'
-import { THEME_TOKENS } from '../tokens'
 
 export function VideoLoop({ src, caption }: VideoLoopProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -36,10 +35,16 @@ export function VideoLoop({ src, caption }: VideoLoopProps) {
   }, [src])
 
   return (
-    <section className="relative min-h-screen overflow-hidden" style={{ backgroundColor: THEME_TOKENS.colors.black }}>
+    <section
+      className="relative min-h-screen overflow-hidden"
+      style={{ backgroundColor: 'var(--ck-color-dark-surface)', color: 'var(--ck-color-dark-ink)', fontFamily: 'var(--ck-font-body)' }}
+    >
       <video ref={videoRef} src={src} muted playsInline preload="auto" className="absolute inset-0 h-full w-full scale-110 object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
-      {caption ? <p className="absolute bottom-10 left-8 right-8 text-sm uppercase tracking-[.2em] text-white md:left-14">{caption}</p> : null}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(to top, color-mix(in srgb, var(--ck-color-dark-surface) 70%, transparent), transparent, color-mix(in srgb, var(--ck-color-dark-surface) 20%, transparent))' }}
+      />
+      {caption ? <p className="absolute bottom-10 left-8 right-8 text-sm uppercase tracking-[.2em] md:left-14">{caption}</p> : null}
     </section>
   )
 }

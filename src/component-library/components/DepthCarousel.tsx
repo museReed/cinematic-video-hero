@@ -35,9 +35,14 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
   return (
     <section
       className="relative min-h-screen overflow-hidden"
-      style={{ backgroundColor: images[active].bg, transition: 'background-color 650ms cubic-bezier(0.4,0,0.2,1)' }}
+      style={{ backgroundColor: images[active].bg, fontFamily: 'var(--ck-font-body)', transition: 'background-color 650ms cubic-bezier(0.4,0,0.2,1)' }}
     >
-      <h2 className="absolute inset-x-0 top-[12%] z-[1] px-6 text-center text-6xl font-black uppercase leading-none text-white/80 md:text-8xl">{title}</h2>
+      <h2
+        className="absolute inset-x-0 top-[12%] z-[1] px-6 text-center text-6xl font-black uppercase leading-none opacity-80 md:text-8xl"
+        style={{ color: 'var(--ck-color-dark-ink)', fontFamily: 'var(--ck-font-display)' }}
+      >
+        {title}
+      </h2>
       {images.map((image, index) => {
         const role = index === roles.center ? 'center' : index === roles.left ? 'left' : index === roles.right ? 'right' : 'back'
         return (
@@ -56,7 +61,8 @@ export function DepthCarousel({ title, images, autoAdvanceMs }: DepthCarouselPro
       <button
         type="button"
         onClick={() => setActive((current) => (current + 1) % images.length)}
-        className="absolute bottom-8 right-8 z-30 rounded-full border border-white/30 bg-black/20 px-5 py-3 text-xs uppercase tracking-widest text-white backdrop-blur"
+        className="absolute bottom-8 right-8 z-30 rounded-full border px-5 py-3 text-xs uppercase tracking-widest backdrop-blur"
+        style={{ backgroundColor: 'var(--ck-color-dark-surface)', borderColor: 'var(--ck-color-dark-ink)', color: 'var(--ck-color-dark-ink)' }}
         aria-label="Show next carousel image"
       >
         Next
