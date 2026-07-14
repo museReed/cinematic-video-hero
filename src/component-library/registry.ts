@@ -1,24 +1,34 @@
 import { DepthCarousel } from './components/DepthCarousel'
 import { Footer } from './components/Footer'
 import { FullBleedVideo } from './components/FullBleedVideo'
+import { GradientHeading } from './components/GradientHeading'
 import { Hero } from './components/Hero'
 import { MasonryGrid } from './components/MasonryGrid'
 import { Marquee } from './components/Marquee'
 import { PricingCard, PricingSection } from './components/Pricing'
 import { QuoteParallax } from './components/QuoteParallax'
+import { ProjectStack } from './components/ProjectStack'
+import { ScrollCharacterReveal } from './components/ScrollCharacterReveal'
+import { ScrollScaleCards } from './components/ScrollScaleCards'
 import { SplitVideoScrub } from './components/SplitVideoScrub'
+import { StickyCardStack } from './components/StickyCardStack'
 import { TestimonialCarousel } from './components/TestimonialCarousel'
 import {
   depthCarouselPropsSchema,
   footerPropsSchema,
   fullBleedVideoPropsSchema,
+  gradientHeadingPropsSchema,
   heroPropsSchema,
   masonryGridPropsSchema,
   marqueePropsSchema,
   pricingCardPropsSchema,
   pricingPropsSchema,
+  projectStackPropsSchema,
   quoteParallaxPropsSchema,
+  scrollCharacterRevealPropsSchema,
+  scrollScaleCardsPropsSchema,
   splitVideoScrubPropsSchema,
+  stickyCardStackPropsSchema,
   testimonialCarouselPropsSchema,
 } from './schemas'
 
@@ -141,6 +151,78 @@ export const componentRegistry = {
       companies: ['Apple', 'IDEO', 'Polygon'],
       portrait: '/characters/fluent-mage.png',
     }],
+  },
+  'section.scroll-scale-cards': {
+    component: ScrollScaleCards,
+    propsSchema: scrollScaleCardsPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Card sequence that scales and fades each item according to its proximity to the viewport center.',
+    useWhen: ['Scrolling should focus the nearest card with a near-large, far-small effect'],
+    avoidWhen: ['Cards have equal importance', 'Every card must remain equally legible at the same time'],
+    examples: [{
+      items: [
+        { title: 'Observe', body: 'Read the frame before shaping the story.' },
+        { title: 'Compose', image: '/characters/fluent-astronaut.png' },
+      ],
+      scaleRange: { min: 0.88 },
+    }],
+  },
+  'section.sticky-card-stack': {
+    component: StickyCardStack,
+    propsSchema: stickyCardStackPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Sticky narrative cards where later items layer over and compress the earlier sequence.',
+    useWhen: ['Projects or steps have a deliberate order and should stack over one another'],
+    avoidWhen: ['Cards have no sequence (use ScrollScaleCards or a regular grid)'],
+    examples: [{
+      items: [
+        { title: 'Frame one', body: 'Establish the premise.' },
+        { title: 'Frame two', body: 'Advance the story.' },
+      ],
+      offsetPx: 28,
+    }],
+  },
+  'section.project-stack': {
+    component: ProjectStack,
+    propsSchema: projectStackPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: ['inview-entrance'],
+    topLevel: true,
+    description: 'Editorial vertical project stack whose projects reveal independently in source order.',
+    useWhen: ['Several projects each need their own full-width story and entrance'],
+    avoidWhen: ['Cards should compress into a stack (use StickyCardStack)', 'Cards should scale by proximity (use ScrollScaleCards)'],
+    examples: [{
+      items: [
+        { name: 'Evr', description: 'A new identity for an ambitious product.', image: '/characters/fluent-mage.png' },
+        { name: 'Orbit', description: 'A cinematic launch told in motion.', image: '/characters/fluent-astronaut.png' },
+      ],
+    }],
+  },
+  'section.scroll-character-reveal': {
+    component: ScrollCharacterReveal,
+    propsSchema: scrollCharacterRevealPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Manifesto text that brightens character by character as reading progress advances.',
+    useWhen: ['A short manifesto or principle should unfold word by word during scroll'],
+    avoidWhen: ['Long-form body copy', 'Text must be readable in full at first glance'],
+    examples: [{ text: 'Make every character count.' }],
+  },
+  'section.gradient-heading': {
+    component: GradientHeading,
+    propsSchema: gradientHeadingPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: ['inview-entrance'],
+    topLevel: true,
+    description: 'Oversized display heading that treats gradient-clipped type as the visual material.',
+    useWhen: ['A single giant heading needs to act as the section visual'],
+    avoidWhen: ['A routine paragraph or subsection heading'],
+    examples: [{ text: 'Future in motion' }],
   },
   'section.footer': {
     component: Footer,

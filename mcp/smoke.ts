@@ -132,6 +132,11 @@ try {
     'SplitVideoScrub',
     'MasonryGrid',
     'QuoteParallax',
+    'ScrollScaleCards',
+    'StickyCardStack',
+    'ProjectStack',
+    'ScrollCharacterReveal',
+    'GradientHeading',
     'Footer',
     'PricingSection',
   ])

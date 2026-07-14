@@ -144,6 +144,60 @@ test('exports all canonical B2 section tags through their registry templates', a
   }
 })
 
+test('exports all canonical B3 section tags through their registry templates', async () => {
+  const cardItems = [
+    { title: 'Observe', body: 'Start with the frame.' },
+    { title: 'Compose', image: '/characters/fluent-astronaut.png' },
+  ]
+  const b3Spec = {
+    version: 1 as const,
+    theme: 'studio' as const,
+    sections: [
+      {
+        id: 'focus-cards',
+        component: 'section.scroll-scale-cards' as const,
+        props: { items: cardItems, scaleRange: { min: 0.88 } },
+      },
+      {
+        id: 'narrative-stack',
+        component: 'section.sticky-card-stack' as const,
+        props: { items: cardItems, offsetPx: 28 },
+      },
+      {
+        id: 'projects',
+        component: 'section.project-stack' as const,
+        props: {
+          items: [
+            { name: 'Evr', description: 'An ambitious product story.', image: '/characters/fluent-mage.png' },
+            { name: 'Orbit', description: 'A launch told in motion.', image: '/characters/fluent-astronaut.png' },
+          ],
+        },
+      },
+      {
+        id: 'manifesto',
+        component: 'section.scroll-character-reveal' as const,
+        props: { text: 'Make every character count.' },
+      },
+      {
+        id: 'display-type',
+        component: 'section.gradient-heading' as const,
+        props: { text: 'Future in motion' },
+      },
+    ],
+  }
+
+  try {
+    const result = await exportPage({ spec: b3Spec })
+    assert.equal(result.ok, true)
+    if (!result.ok) return
+
+    const componentTags = [...result.source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)].map((match) => match[1])
+    assert.deepEqual(componentTags, ['ScrollScaleCards', 'StickyCardStack', 'ProjectStack', 'ScrollCharacterReveal', 'GradientHeading'])
+  } finally {
+    await rm(inlineExportPath, { force: true })
+  }
+})
+
 test('rejects invalid specs without writing a file', async () => {
   await rm(inlineExportPath, { force: true })
 

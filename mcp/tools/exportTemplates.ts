@@ -22,6 +22,11 @@ export const EXPORT_TEMPLATES: Record<ComponentId, ExportTemplate> = {
   'section.split-video-scrub': componentTemplate('SplitVideoScrub'),
   'section.masonry-grid': componentTemplate('MasonryGrid'),
   'section.quote-parallax': componentTemplate('QuoteParallax'),
+  'section.scroll-scale-cards': componentTemplate('ScrollScaleCards'),
+  'section.sticky-card-stack': componentTemplate('StickyCardStack'),
+  'section.project-stack': componentTemplate('ProjectStack'),
+  'section.scroll-character-reveal': componentTemplate('ScrollCharacterReveal'),
+  'section.gradient-heading': componentTemplate('GradientHeading'),
   'section.footer': componentTemplate('Footer'),
   'studio.pricing': (props, children) => {
     const cards = children?.map((child) => child.props) ?? []

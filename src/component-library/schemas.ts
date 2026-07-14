@@ -152,6 +152,64 @@ export const quoteParallaxPropsSchema = z
   })
   .strict()
 
+const scrollCardItemSchema = z
+  .object({
+    title: z.string().max(40),
+    body: z.string().max(160).optional(),
+    image: allowedImagePathSchema.optional(),
+  })
+  .strict()
+
+const scaleRangeSchema = z
+  .object({
+    min: z.number().min(0.7).max(0.99).default(0.88),
+  })
+  .strict()
+
+export const scrollScaleCardsPropsSchema = z
+  .object({
+    items: z.array(scrollCardItemSchema).min(2).max(8),
+    scaleRange: scaleRangeSchema.optional(),
+  })
+  .strict()
+
+export const stickyCardStackPropsSchema = z
+  .object({
+    items: z.array(scrollCardItemSchema).min(2).max(8),
+    offsetPx: z.number().int().min(0).max(64).default(28),
+  })
+  .strict()
+
+const projectStackItemSchema = z
+  .object({
+    name: z.string().max(40),
+    description: z.string().max(160),
+    image: allowedImagePathSchema,
+  })
+  .strict()
+
+export const projectStackPropsSchema = z
+  .object({
+    items: z.array(projectStackItemSchema).min(2).max(8),
+  })
+  .strict()
+
+export const scrollCharacterRevealPropsSchema = z
+  .object({
+    text: z.string().max(400),
+  })
+  .strict()
+
+const hexColorSchema = z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Color must be a #RRGGBB hex value')
+
+export const gradientHeadingPropsSchema = z
+  .object({
+    text: z.string().max(60),
+    from: hexColorSchema.optional(),
+    to: hexColorSchema.optional(),
+  })
+  .strict()
+
 const footerLinkSchema = z
   .object({
     label: z.string().max(24),
@@ -201,5 +259,10 @@ export type TestimonialCarouselProps = z.input<typeof testimonialCarouselPropsSc
 export type SplitVideoScrubProps = z.input<typeof splitVideoScrubPropsSchema>
 export type MasonryGridProps = z.input<typeof masonryGridPropsSchema>
 export type QuoteParallaxProps = z.infer<typeof quoteParallaxPropsSchema>
+export type ScrollScaleCardsProps = z.input<typeof scrollScaleCardsPropsSchema>
+export type StickyCardStackProps = z.input<typeof stickyCardStackPropsSchema>
+export type ProjectStackProps = z.infer<typeof projectStackPropsSchema>
+export type ScrollCharacterRevealProps = z.infer<typeof scrollCharacterRevealPropsSchema>
+export type GradientHeadingProps = z.infer<typeof gradientHeadingPropsSchema>
 export type FooterProps = z.infer<typeof footerPropsSchema>
 export type PricingCardProps = z.infer<typeof pricingCardPropsSchema>
