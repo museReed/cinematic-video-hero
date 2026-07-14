@@ -24,6 +24,7 @@ const transport = new StdioClientTransport({
 })
 const client = new Client({ name: 'component-library-smoke', version: '1.0.0' })
 const smokePagePath = path.resolve(process.cwd(), 'generated-pages', 'smoke-e2e.json')
+const smokeExportPath = path.resolve(process.cwd(), 'exported-pages', 'smoke-e2e.tsx')
 
 const smokeSpec = {
   version: 1,
@@ -45,7 +46,7 @@ const smokeSpec = {
 try {
   await client.connect(transport)
   const listed = await client.listTools()
-  assert(listed.tools.length === 6, `Expected 6 tools, received ${listed.tools.length}`)
+  assert(listed.tools.length === 7, `Expected 7 tools, received ${listed.tools.length}`)
 
   const searchResult = await client.callTool({ name: 'searchComponents', arguments: { query: 'hero' } })
   assert(hasContent(searchResult), 'searchComponents returned no content')
@@ -118,6 +119,14 @@ try {
     'validate_page did not return errors for an invalid spec',
   )
 
+  const exportResult = await client.callTool({ name: 'export_page', arguments: { name: 'smoke-e2e' } })
+  const exported = JSON.parse(textContent(exportResult)) as { ok?: boolean; source?: string }
+  assert(!exportResult.isError && exported.ok && exported.source?.includes('data-theme'), 'export_page failed')
+  const componentTags = [...(exported.source?.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g) ?? [])].map((match) => match[1])
+  const registryTags = new Set(['HeroReveal', 'VideoLoop', 'DepthCarousel', 'ScrollMarquee', 'PricingSection'])
+  assert(componentTags.every((tag) => registryTags.has(tag)), 'export_page emitted a tag outside the registry')
+  console.log('export_page PASS')
+
   console.log('SMOKE PASS')
 } catch (error) {
   console.error(error)
@@ -126,6 +135,6 @@ try {
   try {
     await client.close()
   } finally {
-    await rm(smokePagePath, { force: true })
+    await Promise.all([rm(smokePagePath, { force: true }), rm(smokeExportPath, { force: true })])
   }
 }
