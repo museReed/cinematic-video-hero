@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "theme": "spike",
+  "sections": [
+    {
+      "id": "opening-hero",
+      "component": "cinematic.hero-reveal",
+      "props": {
+        "eyebrow": "Component-only page builder",
+        "title": "Built to move, framed to last",
+        "ctaLabel": "Explore the page"
+      }
+    },
+    {
+      "id": "cinematic-loop",
+      "component": "cinematic.video-loop",
+      "props": {
+        "src": "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4",
+        "caption": "A controlled, allowlisted motion study"
+      }
+    },
+    {
+      "id": "character-depth",
+      "component": "creator.depth-carousel",
+      "props": {
+        "title": "3D Shape",
+        "images": [
+          { "src": "/characters/fluent-astronaut.png", "bg": "#746BE8" },
+          { "src": "/characters/fluent-ninja.png", "bg": "#39304F" },
+          { "src": "/characters/fluent-mage.png", "bg": "#31A7E8" },
+          { "src": "/characters/fluent-superhero.png", "bg": "#ED6CA8" }
+        ],
+        "autoAdvanceMs": 4000
+      }
+    },
+    {
+      "id": "moving-message",
+      "component": "creator.scroll-marquee",
+      "props": {
+        "text": "Make every frame count",
+        "repeat": 4,
+        "speed": "normal"
+      }
+    },
+    {
+      "id": "studio-plans",
+      "component": "studio.pricing",
+      "props": {
+        "heading": "Choose how we work together"
+      },
+      "children": [
+        {
+          "component": "studio.pricing-card",
+          "props": {
+            "title": "Monthly Partnership",
+            "price": "$5,000",
+            "unit": "Monthly",
+            "features": ["A dedicated senior team", "Weekly product and design reviews", "Flexible delivery priorities"],
+            "dark": true,
+            "ctaLabel": "Start a chat"
+          }
+        },
+        {
+          "component": "studio.pricing-card",
+          "props": {
+            "title": "Custom Project",
+            "price": "$5,000",
+            "unit": "Minimum",
+            "features": ["A clearly defined scope", "Milestone-based delivery", "Launch-ready design system"],
+            "dark": false,
+            "ctaLabel": "Discuss a project"
+          }
+        }
+      ]
+    }
+  ]
+}
