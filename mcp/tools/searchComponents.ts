@@ -8,14 +8,19 @@ export function searchComponents({ query, group }: { query?: string; group?: str
     .filter(([id, entry]) => {
       const componentGroup = id.split('.')[0]
       const matchesGroup = !normalizedGroup || componentGroup === normalizedGroup
-      const matchesQuery = !normalizedQuery || `${id} ${entry.description}`.toLowerCase().includes(normalizedQuery)
+      const matchesQuery =
+        !normalizedQuery ||
+        `${id} ${entry.description} ${entry.useWhen.join(' ')}`.toLowerCase().includes(normalizedQuery)
       return matchesGroup && matchesQuery
     })
     .map(([id, entry]) => ({
       id,
       group: id.split('.')[0],
       description: entry.description,
+      useWhen: entry.useWhen,
+      avoidWhen: entry.avoidWhen,
       topLevel: entry.topLevel,
       allowedChildren: entry.allowedChildren,
+      allowedEnhancements: entry.allowedEnhancements,
     }))
 }

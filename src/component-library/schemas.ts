@@ -1,7 +1,7 @@
 import { z } from 'zod/v3'
 import { IMAGE_PATH_PREFIXES, VIDEO_DOMAIN_ALLOWLIST } from './tokens'
 
-const allowedVideoUrlSchema = z
+export const allowedVideoUrlSchema = z
   .string()
   .url()
   .refine((value) => {
@@ -9,7 +9,7 @@ const allowedVideoUrlSchema = z
     return url.protocol === 'https:' && VIDEO_DOMAIN_ALLOWLIST.includes(url.hostname as (typeof VIDEO_DOMAIN_ALLOWLIST)[number])
   }, 'Video URL must use HTTPS and an allowed hostname')
 
-const allowedImagePathSchema = z
+export const allowedImagePathSchema = z
   .string()
   .refine(
     (value) =>

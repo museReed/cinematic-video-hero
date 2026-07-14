@@ -1,8 +1,16 @@
 import { z } from 'zod/v3'
+import { behaviorRegistry, type BehaviorId } from '../behavior-library/registry'
 import { componentRegistry, type ComponentId } from '../component-library/registry'
 import type { PageSpec } from './PageSpec'
 
 const childSchema = z
+  .object({
+    component: z.string(),
+    props: z.record(z.unknown()),
+  })
+  .strict()
+
+const behaviorSchema = z
   .object({
     component: z.string(),
     props: z.record(z.unknown()),
@@ -15,6 +23,7 @@ const sectionSchema = z
     component: z.string(),
     props: z.record(z.unknown()),
     children: z.array(childSchema).min(1).max(3).optional(),
+    enhancements: z.array(behaviorSchema).min(1).max(4).optional(),
   })
   .strict()
 
@@ -23,11 +32,16 @@ const pageSpecSchema = z
     version: z.literal(1),
     theme: z.enum(['studio', 'claude2code']),
     sections: z.array(sectionSchema).min(1).max(10),
+    behaviors: z.array(behaviorSchema).min(1).max(4).optional(),
   })
   .strict()
 
 function isComponentId(value: string): value is ComponentId {
   return Object.prototype.hasOwnProperty.call(componentRegistry, value)
+}
+
+function isBehaviorId(value: string): value is BehaviorId {
+  return Object.prototype.hasOwnProperty.call(behaviorRegistry, value)
 }
 
 function issueText(path: Array<string | number>, message: string) {
@@ -80,7 +94,60 @@ export function validatePageSpec(spec: unknown): { ok: true; spec: PageSpec } | 
         }
       })
     }
+
+    // 寫法 A — section-scope enhancements must be registered section behaviors on this section's allowlist.
+    if (section.enhancements) {
+      const allowedEnhancements = entry.allowedEnhancements as readonly string[]
+      const seenEnhancements = new Set<string>()
+      section.enhancements.forEach((enhancement, enhancementIndex) => {
+        const enhancementPath = `${sectionPath}.enhancements.${enhancementIndex}`
+        if (!isBehaviorId(enhancement.component)) {
+          errors.push(`${enhancementPath}.component: Unknown behavior ${enhancement.component}`)
+          return
+        }
+        const behavior = behaviorRegistry[enhancement.component]
+        if (behavior.scope !== 'section') {
+          errors.push(`${enhancementPath}.component: ${enhancement.component} is a page-scope behavior and cannot enhance a section`)
+        } else if (!allowedEnhancements.includes(enhancement.component)) {
+          errors.push(`${enhancementPath}.component: ${enhancement.component} is not an allowed enhancement of ${section.component}`)
+        }
+        if (seenEnhancements.has(enhancement.component)) {
+          errors.push(`${enhancementPath}.component: Duplicate enhancement ${enhancement.component}`)
+        }
+        seenEnhancements.add(enhancement.component)
+
+        const enhancementPropsResult = behavior.propsSchema.safeParse(enhancement.props)
+        if (!enhancementPropsResult.success) {
+          errors.push(...enhancementPropsResult.error.issues.map((issue) => issueText([enhancementPath, 'props', ...issue.path], issue.message)))
+        }
+      })
+    }
   })
+
+  // 寫法 C — page-scope behaviors must be registered page behaviors, applied at most once each.
+  if (baseResult.data.behaviors) {
+    const seenBehaviors = new Set<string>()
+    baseResult.data.behaviors.forEach((behavior, behaviorIndex) => {
+      const behaviorPath = `behaviors.${behaviorIndex}`
+      if (!isBehaviorId(behavior.component)) {
+        errors.push(`${behaviorPath}.component: Unknown behavior ${behavior.component}`)
+        return
+      }
+      const entry = behaviorRegistry[behavior.component]
+      if (entry.scope !== 'page') {
+        errors.push(`${behaviorPath}.component: ${behavior.component} is a section-scope behavior and cannot apply to the page`)
+      }
+      if (seenBehaviors.has(behavior.component)) {
+        errors.push(`${behaviorPath}.component: Duplicate page behavior ${behavior.component}`)
+      }
+      seenBehaviors.add(behavior.component)
+
+      const behaviorPropsResult = entry.propsSchema.safeParse(behavior.props)
+      if (!behaviorPropsResult.success) {
+        errors.push(...behaviorPropsResult.error.issues.map((issue) => issueText([behaviorPath, 'props', ...issue.path], issue.message)))
+      }
+    })
+  }
 
   return errors.length > 0 ? { ok: false, errors } : { ok: true, spec: baseResult.data as PageSpec }
 }
