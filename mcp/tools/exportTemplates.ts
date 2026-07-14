@@ -27,6 +27,12 @@ export const EXPORT_TEMPLATES: Record<ComponentId, ExportTemplate> = {
   'section.project-stack': componentTemplate('ProjectStack'),
   'section.scroll-character-reveal': componentTemplate('ScrollCharacterReveal'),
   'section.gradient-heading': componentTemplate('GradientHeading'),
+  'section.feature-grid': (props, children) => {
+    const cards = children?.map((child) => child.props) ?? []
+    const propsSource = jsxProps(props)
+    return `<FeatureGrid ${propsSource} cards={${JSON.stringify(cards)}} />`
+  },
+  'section.feature-card': componentTemplate('FeatureCard'),
   'section.footer': componentTemplate('Footer'),
   'studio.pricing': (props, children) => {
     const cards = children?.map((child) => child.props) ?? []

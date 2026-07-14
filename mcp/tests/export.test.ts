@@ -86,6 +86,44 @@ test('flattens pricing card children into the cards prop', async () => {
   }
 })
 
+test('flattens feature card children into the feature grid cards prop', async () => {
+  const featureSpec = {
+    version: 1 as const,
+    theme: 'studio' as const,
+    sections: [
+      {
+        id: 'core-features',
+        component: 'section.feature-grid' as const,
+        props: { badge: 'Core Features', title: 'Built for speed and quality' },
+        children: [
+          {
+            component: 'section.feature-card' as const,
+            props: { variant: 'prompt', title: 'Smart Prompt Suggestions', body: 'Add useful detail as you write.' },
+          },
+          {
+            component: 'section.feature-card' as const,
+            props: { variant: 'api', title: 'API Access' },
+          },
+        ],
+      },
+    ],
+  }
+
+  try {
+    const result = await exportPage({ spec: featureSpec })
+    assert.equal(result.ok, true)
+    if (!result.ok) return
+
+    assert.match(result.source, /cards=\{\[/)
+    assert.match(result.source, /"variant":"prompt"/)
+    assert.match(result.source, /"variant":"api"/)
+    assert.doesNotMatch(result.source, /<FeatureCard\b/)
+    assert.match(result.source, /<FeatureGrid\b/)
+  } finally {
+    await rm(inlineExportPath, { force: true })
+  }
+})
+
 test('exports all canonical B2 section tags through their registry templates', async () => {
   const b2Spec = {
     version: 1 as const,

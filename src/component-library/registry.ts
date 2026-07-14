@@ -1,4 +1,5 @@
 import { DepthCarousel } from './components/DepthCarousel'
+import { FeatureCard, FeatureGrid } from './components/FeatureGrid'
 import { Footer } from './components/Footer'
 import { FullBleedVideo } from './components/FullBleedVideo'
 import { GradientHeading } from './components/GradientHeading'
@@ -15,6 +16,8 @@ import { StickyCardStack } from './components/StickyCardStack'
 import { TestimonialCarousel } from './components/TestimonialCarousel'
 import {
   depthCarouselPropsSchema,
+  featureCardPropsSchema,
+  featureGridPropsSchema,
   footerPropsSchema,
   fullBleedVideoPropsSchema,
   gradientHeadingPropsSchema,
@@ -223,6 +226,33 @@ export const componentRegistry = {
     useWhen: ['A single giant heading needs to act as the section visual'],
     avoidWhen: ['A routine paragraph or subsection heading'],
     examples: [{ text: 'Future in motion' }],
+  },
+  'section.feature-grid': {
+    component: FeatureGrid,
+    propsSchema: featureGridPropsSchema,
+    allowedChildren: ['section.feature-card'],
+    allowedEnhancements: ['inview-entrance'],
+    topLevel: true,
+    description: 'Centered core-features section composed from one to three responsive feature cards.',
+    useWhen: ['Presenting one to three core product features in a responsive grid'],
+    avoidWhen: ['Content is not a product feature showcase (use a general grid)'],
+    examples: [{ badge: 'Core Features', title: 'Built for speed and quality', subtitle: 'Everything needed to move from idea to image.' }],
+  },
+  'section.feature-card': {
+    component: FeatureCard,
+    propsSchema: featureCardPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: false,
+    description: 'Self-contained feature card with a prompt, API, or library illustration rendered inline.',
+    useWhen: ['A single core product capability belongs inside section.feature-grid'],
+    avoidWhen: ['Standalone use outside section.feature-grid', 'The card needs a data-driven image'],
+    variantGuidance: {
+      prompt: 'Use for prompt suggestions or prompt-enhancement capabilities.',
+      api: 'Use for API access, integrations, or network connectivity.',
+      library: 'Use for project libraries, saved assets, or searchable collections.',
+    },
+    examples: [{ variant: 'prompt', title: 'Smart Prompt Suggestions', body: 'Shape stronger prompts with helpful detail.' }],
   },
   'section.footer': {
     component: Footer,

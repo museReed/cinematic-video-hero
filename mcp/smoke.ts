@@ -40,6 +40,21 @@ const smokeSpec = {
       component: 'section.marquee',
       props: { content: 'text', text: 'End to end', speed: 'normal' },
     },
+    {
+      id: 'core-features',
+      component: 'section.feature-grid',
+      props: { badge: 'Core Features', title: 'Built for speed and quality' },
+      children: [
+        {
+          component: 'section.feature-card',
+          props: { variant: 'prompt', title: 'Smart Prompt Suggestions' },
+        },
+        {
+          component: 'section.feature-card',
+          props: { variant: 'library', title: 'Project Library', body: 'Find every saved project.' },
+        },
+      ],
+    },
   ],
 }
 
@@ -70,7 +85,7 @@ try {
     arguments: { name: 'smoke-e2e', spec: smokeSpec },
   })
   const compose = JSON.parse(textContent(composeResult)) as { ok?: boolean; sectionCount?: number }
-  assert(!composeResult.isError && compose.ok && compose.sectionCount === 2, 'compose_page did not create the page')
+  assert(!composeResult.isError && compose.ok && compose.sectionCount === 3, 'compose_page did not create the page')
 
   const duplicateResult = await client.callTool({
     name: 'compose_page',
@@ -89,7 +104,7 @@ try {
     },
   })
   const update = JSON.parse(textContent(updateResult)) as { ok?: boolean; applied?: number; sectionCount?: number }
-  assert(!updateResult.isError && update.ok && update.applied === 2 && update.sectionCount === 2, 'update_page failed')
+  assert(!updateResult.isError && update.ok && update.applied === 2 && update.sectionCount === 3, 'update_page failed')
 
   const afterUpdate = await readFile(smokePagePath, 'utf8')
   const badUpdateResult = await client.callTool({
@@ -122,6 +137,7 @@ try {
   const exportResult = await client.callTool({ name: 'export_page', arguments: { name: 'smoke-e2e' } })
   const exported = JSON.parse(textContent(exportResult)) as { ok?: boolean; source?: string }
   assert(!exportResult.isError && exported.ok && exported.source?.includes('data-theme'), 'export_page failed')
+  assert(exported.source?.includes('<FeatureGrid') && exported.source.includes('cards={['), 'export_page did not flatten feature cards')
   const componentTags = [...(exported.source?.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g) ?? [])].map((match) => match[1])
   const registryTags = new Set([
     'Hero',
@@ -137,6 +153,8 @@ try {
     'ProjectStack',
     'ScrollCharacterReveal',
     'GradientHeading',
+    'FeatureGrid',
+    'FeatureCard',
     'Footer',
     'PricingSection',
   ])

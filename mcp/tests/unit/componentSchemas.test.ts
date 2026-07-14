@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  featureCardPropsSchema,
+  featureGridPropsSchema,
   fullBleedVideoPropsSchema,
   gradientHeadingPropsSchema,
   heroPropsSchema,
@@ -190,6 +192,25 @@ test('character reveal and gradient heading enforce copy and color limits', () =
   assert.equal(gradientHeadingPropsSchema.safeParse({ text: 'Future', from: '#fff' }).success, false)
   assert.equal(gradientHeadingPropsSchema.safeParse({ text: 'Future', to: 'var(--primary)' }).success, false)
   assert.equal(gradientHeadingPropsSchema.safeParse({ text: 'Future', extra: true }).success, false)
+})
+
+test('feature grid and card enforce copy limits, variants, and strict boundaries', () => {
+  assert.equal(
+    featureGridPropsSchema.safeParse({ badge: 'Core Features', title: 'Built for speed', subtitle: 'Everything in one place.' }).success,
+    true,
+  )
+  assert.equal(featureGridPropsSchema.safeParse({ badge: 'x'.repeat(25), title: 'Built for speed' }).success, false)
+  assert.equal(featureGridPropsSchema.safeParse({ title: 'x'.repeat(61) }).success, false)
+  assert.equal(featureGridPropsSchema.safeParse({ title: 'Built for speed', subtitle: 'x'.repeat(121) }).success, false)
+  assert.equal(featureGridPropsSchema.safeParse({ title: 'Built for speed', extra: true }).success, false)
+
+  for (const variant of ['prompt', 'api', 'library']) {
+    assert.equal(featureCardPropsSchema.safeParse({ variant, title: 'Feature', body: 'A focused capability.' }).success, true)
+  }
+  assert.equal(featureCardPropsSchema.safeParse({ variant: 'image', title: 'Feature' }).success, false)
+  assert.equal(featureCardPropsSchema.safeParse({ variant: 'prompt', title: 'x'.repeat(41) }).success, false)
+  assert.equal(featureCardPropsSchema.safeParse({ variant: 'api', title: 'Feature', body: 'x'.repeat(121) }).success, false)
+  assert.equal(featureCardPropsSchema.safeParse({ variant: 'library', title: 'Feature', image: '/characters/folder.svg' }).success, false)
 })
 
 test('safe href allows HTTPS and anchors while rejecting executable protocols', () => {

@@ -1,6 +1,6 @@
 import { createElement, useEffect, type ComponentType } from 'react'
 import { componentRegistry } from '../component-library/registry'
-import type { PricingCardProps } from '../component-library/schemas'
+import type { FeatureCardProps, PricingCardProps } from '../component-library/schemas'
 import { buildThemeCss, THEME_FONT_CSS_URLS } from '../component-library/tokens'
 import type { PageSpec } from './PageSpec'
 import { validatePageSpec } from './validatePageSpec'
@@ -49,6 +49,11 @@ export function PageRenderer({ spec }: { spec: PageSpec }) {
 
         if (section.component === 'studio.pricing') {
           const cards = section.children?.map((child) => child.props as PricingCardProps) ?? []
+          return createElement(Component, { key: section.id, ...props, cards })
+        }
+
+        if (section.component === 'section.feature-grid') {
+          const cards = section.children?.map((child) => child.props as FeatureCardProps) ?? []
           return createElement(Component, { key: section.id, ...props, cards })
         }
 

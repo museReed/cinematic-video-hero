@@ -210,6 +210,22 @@ export const gradientHeadingPropsSchema = z
   })
   .strict()
 
+export const featureGridPropsSchema = z
+  .object({
+    badge: z.string().max(24).optional(),
+    title: z.string().max(60),
+    subtitle: z.string().max(120).optional(),
+  })
+  .strict()
+
+export const featureCardPropsSchema = z
+  .object({
+    variant: z.enum(['prompt', 'api', 'library']),
+    title: z.string().max(40),
+    body: z.string().max(120).optional(),
+  })
+  .strict()
+
 const footerLinkSchema = z
   .object({
     label: z.string().max(24),
@@ -264,5 +280,7 @@ export type StickyCardStackProps = z.input<typeof stickyCardStackPropsSchema>
 export type ProjectStackProps = z.infer<typeof projectStackPropsSchema>
 export type ScrollCharacterRevealProps = z.infer<typeof scrollCharacterRevealPropsSchema>
 export type GradientHeadingProps = z.infer<typeof gradientHeadingPropsSchema>
+export type FeatureGridProps = z.infer<typeof featureGridPropsSchema>
+export type FeatureCardProps = z.infer<typeof featureCardPropsSchema>
 export type FooterProps = z.infer<typeof footerPropsSchema>
 export type PricingCardProps = z.infer<typeof pricingCardPropsSchema>

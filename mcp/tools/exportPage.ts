@@ -23,6 +23,8 @@ const componentImports: Record<ComponentId, { name: string; module: string }> = 
   'section.project-stack': { name: 'ProjectStack', module: '../src/component-library/components/ProjectStack' },
   'section.scroll-character-reveal': { name: 'ScrollCharacterReveal', module: '../src/component-library/components/ScrollCharacterReveal' },
   'section.gradient-heading': { name: 'GradientHeading', module: '../src/component-library/components/GradientHeading' },
+  'section.feature-grid': { name: 'FeatureGrid', module: '../src/component-library/components/FeatureGrid' },
+  'section.feature-card': { name: 'FeatureCard', module: '../src/component-library/components/FeatureGrid' },
   'section.footer': { name: 'Footer', module: '../src/component-library/components/Footer' },
   'studio.pricing': { name: 'PricingSection', module: '../src/component-library/components/Pricing' },
   'studio.pricing-card': { name: 'PricingCard', module: '../src/component-library/components/Pricing' },
