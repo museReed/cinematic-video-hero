@@ -85,6 +85,73 @@ export const marqueePropsSchema = z.discriminatedUnion('content', [
     .strict(),
 ])
 
+const testimonialItemSchema = z
+  .object({
+    quote: z.string().max(200),
+    author: z.string().max(40),
+    company: z.string().max(40),
+  })
+  .strict()
+
+export const testimonialCarouselPropsSchema = z
+  .object({
+    items: z.array(testimonialItemSchema).min(2).max(8),
+    autoAdvanceMs: z.number().int().min(2000).max(8000).default(3000),
+    cardWidth: z.number().int().min(240).max(600).optional(),
+  })
+  .strict()
+
+const deadZoneSchema = z
+  .object({
+    left: z.number().min(0).max(1),
+    right: z.number().min(0).max(1),
+  })
+  .strict()
+  .refine(({ left, right }) => left < right, { message: 'Dead zone left must be less than right' })
+
+export const splitVideoScrubPropsSchema = z
+  .object({
+    left: allowedVideoUrlSchema,
+    right: allowedVideoUrlSchema,
+    mode: z.enum(['independent', 'dead-zone']).default('independent'),
+    deadZone: deadZoneSchema.optional(),
+  })
+  .strict()
+  .refine(({ mode, deadZone }) => mode === 'dead-zone' || deadZone === undefined, {
+    message: 'Dead zone thresholds are only valid in dead-zone mode',
+    path: ['deadZone'],
+  })
+
+const masonryItemSchema = z
+  .object({
+    src: allowedImagePathSchema,
+    aspect: z.number().min(0.3).max(3),
+  })
+  .strict()
+
+const masonryColumnsSchema = z
+  .object({
+    mobile: z.union([z.literal(1), z.literal(2)]).default(2),
+    desktop: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
+  })
+  .strict()
+
+export const masonryGridPropsSchema = z
+  .object({
+    items: z.array(masonryItemSchema).min(2).max(24),
+    columns: masonryColumnsSchema.optional(),
+  })
+  .strict()
+
+export const quoteParallaxPropsSchema = z
+  .object({
+    quote: z.string().max(200),
+    author: z.string().max(40),
+    companies: z.array(z.string().max(40)).max(3).optional(),
+    portrait: allowedImagePathSchema,
+  })
+  .strict()
+
 const footerLinkSchema = z
   .object({
     label: z.string().max(24),
@@ -130,5 +197,9 @@ export type HeroProps = z.input<typeof heroPropsSchema>
 export type FullBleedVideoProps = z.input<typeof fullBleedVideoPropsSchema>
 export type DepthCarouselProps = z.infer<typeof depthCarouselPropsSchema>
 export type MarqueeProps = z.input<typeof marqueePropsSchema>
+export type TestimonialCarouselProps = z.input<typeof testimonialCarouselPropsSchema>
+export type SplitVideoScrubProps = z.input<typeof splitVideoScrubPropsSchema>
+export type MasonryGridProps = z.input<typeof masonryGridPropsSchema>
+export type QuoteParallaxProps = z.infer<typeof quoteParallaxPropsSchema>
 export type FooterProps = z.infer<typeof footerPropsSchema>
 export type PricingCardProps = z.infer<typeof pricingCardPropsSchema>

@@ -2,16 +2,24 @@ import { DepthCarousel } from './components/DepthCarousel'
 import { Footer } from './components/Footer'
 import { FullBleedVideo } from './components/FullBleedVideo'
 import { Hero } from './components/Hero'
+import { MasonryGrid } from './components/MasonryGrid'
 import { Marquee } from './components/Marquee'
 import { PricingCard, PricingSection } from './components/Pricing'
+import { QuoteParallax } from './components/QuoteParallax'
+import { SplitVideoScrub } from './components/SplitVideoScrub'
+import { TestimonialCarousel } from './components/TestimonialCarousel'
 import {
   depthCarouselPropsSchema,
   footerPropsSchema,
   fullBleedVideoPropsSchema,
   heroPropsSchema,
+  masonryGridPropsSchema,
   marqueePropsSchema,
   pricingCardPropsSchema,
   pricingPropsSchema,
+  quoteParallaxPropsSchema,
+  splitVideoScrubPropsSchema,
+  testimonialCarouselPropsSchema,
 } from './schemas'
 
 // Registry doubles as the AI selection guide: `useWhen` / `avoidWhen` tell an AI page builder
@@ -68,6 +76,71 @@ export const componentRegistry = {
     useWhen: ['Showing a full-width row of logos or work', 'Adding an animated rhythm across the page'],
     avoidWhen: ['Users need to stop and read each item'],
     examples: [{ content: 'text', text: 'Make every frame count', speed: 'normal', rows: 2 }],
+  },
+  'section.testimonial-carousel': {
+    component: TestimonialCarousel,
+    propsSchema: testimonialCarouselPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Auto-advancing, hover-pausable testimonial rail with manual controls and infinite recentering.',
+    useWhen: ['Multiple customer testimonials should move continuously in a carousel'],
+    avoidWhen: ['Only one or two testimonials are available (use static cards)'],
+    examples: [{
+      items: [
+        { quote: 'The work was consistently thoughtful and precise.', author: 'Mara Chen', company: 'Northstar' },
+        { quote: 'Our strongest launch to date.', author: 'Alex Wu', company: 'Nexgate' },
+      ],
+      autoAdvanceMs: 3000,
+    }],
+  },
+  'section.split-video-scrub': {
+    component: SplitVideoScrub,
+    propsSchema: splitVideoScrubPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Split-screen viewer for exploring two paused videos through pointer-position scrubbing.',
+    useWhen: ['Two videos need side-by-side comparison through pointer exploration'],
+    avoidWhen: ['The experience is primarily for mobile devices (use poster fallbacks)'],
+    examples: [{
+      left: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4',
+      right: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4',
+      mode: 'independent',
+    }],
+  },
+  'section.masonry-grid': {
+    component: MasonryGrid,
+    propsSchema: masonryGridPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: ['inview-entrance'],
+    topLevel: true,
+    description: 'Responsive variable-height image archive that assigns each tile to the currently shortest column.',
+    useWhen: ['Many uneven images need a balanced archive or gallery layout'],
+    avoidWhen: ['There are few items', 'Content needs fixed grid alignment'],
+    examples: [{
+      items: [
+        { src: '/characters/fluent-astronaut.png', aspect: 0.8 },
+        { src: '/characters/fluent-mage.png', aspect: 1.2 },
+      ],
+      columns: { mobile: 2, desktop: 3 },
+    }],
+  },
+  'section.quote-parallax': {
+    component: QuoteParallax,
+    propsSchema: quoteParallaxPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Large editorial quote paired with a portrait that moves gently with scroll.',
+    useWhen: ['A single high-impact quotation or testimonial needs a parallax atmosphere'],
+    avoidWhen: ['Showing multiple testimonials (use TestimonialCarousel)'],
+    examples: [{
+      quote: 'We built the studio we wanted to work with.',
+      author: 'Viktor Oddy',
+      companies: ['Apple', 'IDEO', 'Polygon'],
+      portrait: '/characters/fluent-mage.png',
+    }],
   },
   'section.footer': {
     component: Footer,

@@ -18,6 +18,10 @@ export const EXPORT_TEMPLATES: Record<ComponentId, ExportTemplate> = {
   'section.full-bleed-video': componentTemplate('FullBleedVideo'),
   'creator.depth-carousel': componentTemplate('DepthCarousel'),
   'section.marquee': componentTemplate('Marquee'),
+  'section.testimonial-carousel': componentTemplate('TestimonialCarousel'),
+  'section.split-video-scrub': componentTemplate('SplitVideoScrub'),
+  'section.masonry-grid': componentTemplate('MasonryGrid'),
+  'section.quote-parallax': componentTemplate('QuoteParallax'),
   'section.footer': componentTemplate('Footer'),
   'studio.pricing': (props, children) => {
     const cards = children?.map((child) => child.props) ?? []

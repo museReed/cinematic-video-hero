@@ -123,7 +123,18 @@ try {
   const exported = JSON.parse(textContent(exportResult)) as { ok?: boolean; source?: string }
   assert(!exportResult.isError && exported.ok && exported.source?.includes('data-theme'), 'export_page failed')
   const componentTags = [...(exported.source?.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g) ?? [])].map((match) => match[1])
-  const registryTags = new Set(['Hero', 'FullBleedVideo', 'DepthCarousel', 'Marquee', 'Footer', 'PricingSection'])
+  const registryTags = new Set([
+    'Hero',
+    'FullBleedVideo',
+    'DepthCarousel',
+    'Marquee',
+    'TestimonialCarousel',
+    'SplitVideoScrub',
+    'MasonryGrid',
+    'QuoteParallax',
+    'Footer',
+    'PricingSection',
+  ])
   assert(componentTags.every((tag) => registryTags.has(tag)), 'export_page emitted a tag outside the registry')
   console.log('export_page PASS')
 

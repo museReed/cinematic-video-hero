@@ -86,6 +86,64 @@ test('flattens pricing card children into the cards prop', async () => {
   }
 })
 
+test('exports all canonical B2 section tags through their registry templates', async () => {
+  const b2Spec = {
+    version: 1 as const,
+    theme: 'studio' as const,
+    sections: [
+      {
+        id: 'testimonials',
+        component: 'section.testimonial-carousel' as const,
+        props: {
+          items: [
+            { quote: 'Precise and thoughtful.', author: 'Mara', company: 'Northstar' },
+            { quote: 'Our strongest launch.', author: 'Alex', company: 'Nexgate' },
+          ],
+        },
+      },
+      {
+        id: 'comparison',
+        component: 'section.split-video-scrub' as const,
+        props: {
+          left: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4',
+          right: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4',
+          mode: 'independent',
+        },
+      },
+      {
+        id: 'archive',
+        component: 'section.masonry-grid' as const,
+        props: {
+          items: [
+            { src: '/characters/fluent-astronaut.png', aspect: 0.8 },
+            { src: '/characters/fluent-mage.png', aspect: 1.2 },
+          ],
+        },
+      },
+      {
+        id: 'quote',
+        component: 'section.quote-parallax' as const,
+        props: {
+          quote: 'We built the studio we wanted to work with.',
+          author: 'Viktor Oddy',
+          portrait: '/characters/fluent-mage.png',
+        },
+      },
+    ],
+  }
+
+  try {
+    const result = await exportPage({ spec: b2Spec })
+    assert.equal(result.ok, true)
+    if (!result.ok) return
+
+    const componentTags = [...result.source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)].map((match) => match[1])
+    assert.deepEqual(componentTags, ['TestimonialCarousel', 'SplitVideoScrub', 'MasonryGrid', 'QuoteParallax'])
+  } finally {
+    await rm(inlineExportPath, { force: true })
+  }
+})
+
 test('rejects invalid specs without writing a file', async () => {
   await rm(inlineExportPath, { force: true })
 
