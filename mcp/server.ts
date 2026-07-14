@@ -1,9 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod/v3'
+import { composePage, composePageInputSchema } from './tools/composePage'
 import { getComponentSchema } from './tools/getComponentSchema'
 import { listDesignTokens } from './tools/listDesignTokens'
 import { searchComponents } from './tools/searchComponents'
+import { updatePage, updatePageInputSchema } from './tools/updatePage'
+import { validatePage, validatePageInputSchema } from './tools/validatePage'
 
 const server = new McpServer({ name: 'component-library-spike', version: '1.0.0' })
 
@@ -41,6 +44,41 @@ server.registerTool(
     annotations: { readOnlyHint: true },
   },
   async () => ({ content: [{ type: 'text', text: JSON.stringify(listDesignTokens(), null, 2) }] }),
+)
+
+function toolResult(result: { ok: boolean }) {
+  return {
+    content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
+    isError: !result.ok,
+  }
+}
+
+server.registerTool(
+  'compose_page',
+  {
+    description: 'Create a validated generated page without overwriting an existing page by default.',
+    inputSchema: composePageInputSchema,
+  },
+  async (input) => toolResult(await composePage(input)),
+)
+
+server.registerTool(
+  'update_page',
+  {
+    description: 'Apply validated operations to an existing generated page.',
+    inputSchema: updatePageInputSchema,
+  },
+  async (input) => toolResult(await updatePage(input)),
+)
+
+server.registerTool(
+  'validate_page',
+  {
+    description: 'Validate a generated page by name or validate an inline page spec.',
+    inputSchema: validatePageInputSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (input) => toolResult(await validatePage(input)),
 )
 
 await server.connect(new StdioServerTransport())

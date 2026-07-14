@@ -1,5 +1,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
+import { readFile, rm } from 'node:fs/promises'
+import path from 'node:path'
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message)
@@ -21,11 +23,29 @@ const transport = new StdioClientTransport({
   stderr: 'pipe',
 })
 const client = new Client({ name: 'component-library-smoke', version: '1.0.0' })
+const smokePagePath = path.resolve(process.cwd(), 'generated-pages', 'smoke-e2e.json')
+
+const smokeSpec = {
+  version: 1,
+  theme: 'studio',
+  sections: [
+    {
+      id: 'opening-hero',
+      component: 'cinematic.hero-reveal',
+      props: { eyebrow: 'Smoke test', title: 'MCP page tools' },
+    },
+    {
+      id: 'moving-message',
+      component: 'creator.scroll-marquee',
+      props: { text: 'End to end', repeat: 3, speed: 'normal' },
+    },
+  ],
+}
 
 try {
   await client.connect(transport)
   const listed = await client.listTools()
-  assert(listed.tools.length === 3, `Expected 3 tools, received ${listed.tools.length}`)
+  assert(listed.tools.length === 6, `Expected 6 tools, received ${listed.tools.length}`)
 
   const searchResult = await client.callTool({ name: 'searchComponents', arguments: { query: 'hero' } })
   assert(hasContent(searchResult), 'searchComponents returned no content')
@@ -44,10 +64,68 @@ try {
   const unknownResult = await client.callTool({ name: 'getComponentSchema', arguments: { componentId: 'unknown.component' } })
   assert(unknownResult.isError === true, 'Unknown componentId did not return an MCP error')
 
+  const composeResult = await client.callTool({
+    name: 'compose_page',
+    arguments: { name: 'smoke-e2e', spec: smokeSpec },
+  })
+  const compose = JSON.parse(textContent(composeResult)) as { ok?: boolean; sectionCount?: number }
+  assert(!composeResult.isError && compose.ok && compose.sectionCount === 2, 'compose_page did not create the page')
+
+  const duplicateResult = await client.callTool({
+    name: 'compose_page',
+    arguments: { name: 'smoke-e2e', spec: smokeSpec },
+  })
+  assert(duplicateResult.isError === true, 'Duplicate compose_page did not return an MCP error')
+
+  const updateResult = await client.callTool({
+    name: 'update_page',
+    arguments: {
+      name: 'smoke-e2e',
+      ops: [
+        { op: 'replaceProps', sectionId: 'opening-hero', props: { eyebrow: 'Updated', title: 'Still valid' } },
+        { op: 'moveSection', sectionId: 'moving-message', toIndex: 0 },
+      ],
+    },
+  })
+  const update = JSON.parse(textContent(updateResult)) as { ok?: boolean; applied?: number; sectionCount?: number }
+  assert(!updateResult.isError && update.ok && update.applied === 2 && update.sectionCount === 2, 'update_page failed')
+
+  const afterUpdate = await readFile(smokePagePath, 'utf8')
+  const badUpdateResult = await client.callTool({
+    name: 'update_page',
+    arguments: {
+      name: 'smoke-e2e',
+      ops: [
+        {
+          op: 'addSection',
+          section: { id: 'unknown-section', component: 'unknown.component', props: {} },
+        },
+      ],
+    },
+  })
+  assert(badUpdateResult.isError === true, 'Invalid update_page did not return an MCP error')
+  assert((await readFile(smokePagePath, 'utf8')) === afterUpdate, 'Invalid update_page changed the page file')
+
+  const validateByNameResult = await client.callTool({ name: 'validate_page', arguments: { name: 'smoke-e2e' } })
+  const validateByName = JSON.parse(textContent(validateByNameResult)) as { ok?: boolean }
+  assert(!validateByNameResult.isError && validateByName.ok, 'validate_page rejected the stored page')
+
+  const invalidSpec = { ...smokeSpec, sections: [{ ...smokeSpec.sections[0], component: 'unknown.component' }] }
+  const validateBadSpecResult = await client.callTool({ name: 'validate_page', arguments: { spec: invalidSpec } })
+  const validateBadSpec = JSON.parse(textContent(validateBadSpecResult)) as { ok?: boolean; errors?: string[] }
+  assert(
+    validateBadSpecResult.isError === true && !validateBadSpec.ok && (validateBadSpec.errors?.length ?? 0) > 0,
+    'validate_page did not return errors for an invalid spec',
+  )
+
   console.log('SMOKE PASS')
 } catch (error) {
   console.error(error)
   process.exitCode = 1
 } finally {
-  await client.close()
+  try {
+    await client.close()
+  } finally {
+    await rm(smokePagePath, { force: true })
+  }
 }
