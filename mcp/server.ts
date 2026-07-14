@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod/v3'
 import { composePage, composePageInputSchema } from './tools/composePage'
+import { exportPage, exportPageInputSchema } from './tools/exportPage'
 import { getComponentSchema } from './tools/getComponentSchema'
 import { listDesignTokens } from './tools/listDesignTokens'
 import { searchComponents } from './tools/searchComponents'
@@ -79,6 +80,15 @@ server.registerTool(
     annotations: { readOnlyHint: true },
   },
   async (input) => toolResult(await validatePage(input)),
+)
+
+server.registerTool(
+  'export_page',
+  {
+    description: 'Export a validated generated page or inline page spec as fixed-template React source.',
+    inputSchema: exportPageInputSchema,
+  },
+  async (input) => toolResult(await exportPage(input)),
 )
 
 await server.connect(new StdioServerTransport())
