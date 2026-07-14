@@ -2,6 +2,9 @@
   "$meta": {
     "name": "claude2code design system",
     "source": "claude2code.com (map + lesson + progress bar/mascot)",
+    "importedFrom": "claude-code-workshop repo: design-system/assets/css/design-system.json",
+    "importedAt": "2026-07-14",
+    "syncPolicy": "imported theme package — snapshot, no live sync; update by re-importing deliberately",
     "structure": "兩層：primitive(原始色階) → semantic(語意 token)。建站時用 semantic，改色只改 primitive。",
     "scaleNote": "每色 6 階，1=最亮 6=最暗，第 4 階為品牌原色"
   },
