@@ -1,41 +1,43 @@
 import { DepthCarousel } from './components/DepthCarousel'
-import { HeroReveal } from './components/HeroReveal'
+import { Footer } from './components/Footer'
+import { FullBleedVideo } from './components/FullBleedVideo'
+import { Hero } from './components/Hero'
+import { Marquee } from './components/Marquee'
 import { PricingCard, PricingSection } from './components/Pricing'
-import { ScrollMarquee } from './components/ScrollMarquee'
-import { VideoLoop } from './components/VideoLoop'
 import {
   depthCarouselPropsSchema,
-  heroRevealPropsSchema,
+  footerPropsSchema,
+  fullBleedVideoPropsSchema,
+  heroPropsSchema,
+  marqueePropsSchema,
   pricingCardPropsSchema,
   pricingPropsSchema,
-  scrollMarqueePropsSchema,
-  videoLoopPropsSchema,
 } from './schemas'
 
 // Registry doubles as the AI selection guide: `useWhen` / `avoidWhen` tell an AI page builder
 // when to pick each component; `allowedEnhancements` lists the section-scope behaviors it accepts.
 export const componentRegistry = {
-  'cinematic.hero-reveal': {
-    component: HeroReveal,
-    propsSchema: heroRevealPropsSchema,
+  'section.hero': {
+    component: Hero,
+    propsSchema: heroPropsSchema,
     allowedChildren: [],
     allowedEnhancements: ['inview-entrance'],
     topLevel: true,
-    description: 'Full-screen cinematic hero with a staggered eyebrow, title, and optional call to action.',
+    description: 'Centered opening hero with an eyebrow, title, optional body and call to action.',
     useWhen: ['Opening a page', 'A single dominant hero statement', 'Establishing brand tone immediately'],
     avoidWhen: ['A secondary mid-page block (use a plain heading)'],
-    examples: [{ eyebrow: 'Introduction', title: 'Built to move', ctaLabel: 'Explore' }],
+    examples: [{ eyebrow: 'Introduction', title: 'Built to move', ctaLabel: 'Explore', layout: 'cinematic' }],
   },
-  'cinematic.video-loop': {
-    component: VideoLoop,
-    propsSchema: videoLoopPropsSchema,
+  'section.full-bleed-video': {
+    component: FullBleedVideo,
+    propsSchema: fullBleedVideoPropsSchema,
     allowedChildren: [],
     allowedEnhancements: [],
     topLevel: true,
-    description: 'Full-screen RAF-driven video fade loop using an allowlisted HTTPS source.',
+    description: 'Full-screen video with atmospheric looping or pointer-driven scrubbing and a resilient fallback.',
     useWhen: ['An immersive moving background', 'Video is the main subject'],
     avoidWhen: ['Mobile-first or bandwidth-constrained pages', 'Text-heavy content'],
-    examples: [{ src: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4', caption: 'A cinematic loop' }],
+    examples: [{ src: 'https://d8j0ntlcm91z4.cloudfront.net/demo.mp4', caption: 'A cinematic loop', interaction: 'none' }],
   },
   'creator.depth-carousel': {
     component: DepthCarousel,
@@ -56,16 +58,33 @@ export const componentRegistry = {
       ],
     }],
   },
-  'creator.scroll-marquee': {
-    component: ScrollMarquee,
-    propsSchema: scrollMarqueePropsSchema,
+  'section.marquee': {
+    component: Marquee,
+    propsSchema: marqueePropsSchema,
     allowedChildren: [],
     allowedEnhancements: [],
     topLevel: true,
-    description: 'Two-row animated text marquee with constrained repeat count and speed.',
-    useWhen: ['A full-width animated rhythm of repeated text'],
+    description: 'Full-width infinite marquee for repeated text or an allowlisted image rail.',
+    useWhen: ['Showing a full-width row of logos or work', 'Adding an animated rhythm across the page'],
     avoidWhen: ['Users need to stop and read each item'],
-    examples: [{ text: 'Make every frame count', repeat: 4, speed: 'normal' }],
+    examples: [{ content: 'text', text: 'Make every frame count', speed: 'normal', rows: 2 }],
+  },
+  'section.footer': {
+    component: Footer,
+    propsSchema: footerPropsSchema,
+    allowedChildren: [],
+    allowedEnhancements: [],
+    topLevel: true,
+    description: 'Grouped footer navigation with company details and a persistent conversion pill.',
+    useWhen: ['Closing a page with navigation and a conversion action'],
+    avoidWhen: ['A mid-page section'],
+    examples: [{
+      ctaLabel: 'Start a chat',
+      columns: [{ heading: 'Explore', links: [{ label: 'Work', href: '#work' }] }],
+      company: 'Vortex Studio Limited',
+      location: 'Austin, USA',
+      bottomCtaLabel: 'Start a chat',
+    }],
   },
   'studio.pricing': {
     component: PricingSection,

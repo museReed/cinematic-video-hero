@@ -32,13 +32,13 @@ const smokeSpec = {
   sections: [
     {
       id: 'opening-hero',
-      component: 'cinematic.hero-reveal',
+      component: 'section.hero',
       props: { eyebrow: 'Smoke test', title: 'MCP page tools' },
     },
     {
       id: 'moving-message',
-      component: 'creator.scroll-marquee',
-      props: { text: 'End to end', repeat: 3, speed: 'normal' },
+      component: 'section.marquee',
+      props: { content: 'text', text: 'End to end', speed: 'normal' },
     },
   ],
 }
@@ -51,7 +51,7 @@ try {
   const searchResult = await client.callTool({ name: 'searchComponents', arguments: { query: 'hero' } })
   assert(hasContent(searchResult), 'searchComponents returned no content')
 
-  const schemaResult = await client.callTool({ name: 'getComponentSchema', arguments: { componentId: 'cinematic.hero-reveal' } })
+  const schemaResult = await client.callTool({ name: 'getComponentSchema', arguments: { componentId: 'section.hero' } })
   assert(hasContent(schemaResult) && !schemaResult.isError, 'getComponentSchema returned an error or no content')
 
   const tokenResult = await client.callTool({ name: 'listDesignTokens', arguments: {} })
@@ -123,7 +123,7 @@ try {
   const exported = JSON.parse(textContent(exportResult)) as { ok?: boolean; source?: string }
   assert(!exportResult.isError && exported.ok && exported.source?.includes('data-theme'), 'export_page failed')
   const componentTags = [...(exported.source?.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g) ?? [])].map((match) => match[1])
-  const registryTags = new Set(['HeroReveal', 'VideoLoop', 'DepthCarousel', 'ScrollMarquee', 'PricingSection'])
+  const registryTags = new Set(['Hero', 'FullBleedVideo', 'DepthCarousel', 'Marquee', 'Footer', 'PricingSection'])
   assert(componentTags.every((tag) => registryTags.has(tag)), 'export_page emitted a tag outside the registry')
   console.log('export_page PASS')
 

@@ -12,13 +12,13 @@ const heroSpec = {
   sections: [
     {
       id: 'opening-hero',
-      component: 'cinematic.hero-reveal' as const,
+      component: 'section.hero' as const,
       props: { eyebrow: 'Testing', title: 'Fixed templates' },
     },
     {
       id: 'moving-message',
-      component: 'creator.scroll-marquee' as const,
-      props: { text: 'Only registry components', repeat: 3, speed: 'normal' },
+      component: 'section.marquee' as const,
+      props: { content: 'text', text: 'Only registry components', speed: 'normal' },
     },
   ],
 }
@@ -41,7 +41,7 @@ test('exports a valid spec using only registry component tags', async () => {
     assert.match(result.source, /export default function GeneratedPage\(\)/)
     assert.match(result.source, /data-theme="studio"/)
     const componentTags = [...result.source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)].map((match) => match[1])
-    assert.deepEqual(componentTags, ['HeroReveal', 'ScrollMarquee'])
+    assert.deepEqual(componentTags, ['Hero', 'Marquee'])
   } finally {
     await rm(inlineExportPath, { force: true })
   }

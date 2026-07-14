@@ -73,7 +73,7 @@ const cases: Array<{ name: string; expected: boolean; build: () => unknown }> = 
   {
     name: 'non-card pricing child is rejected', expected: false, build: () => {
       const spec = cloneSample()
-      spec.sections[4].children![0] = { component: 'cinematic.hero-reveal', props: { eyebrow: 'Bad', title: 'Child' } }
+      spec.sections[4].children![0] = { component: 'section.hero', props: { eyebrow: 'Bad', title: 'Child' } }
       return spec
     },
   },

@@ -10,10 +10,11 @@ import { pageNameSchema, readPage } from './pageStore'
 const EXPORTED_DIR = path.resolve(process.cwd(), 'exported-pages')
 
 const componentImports: Record<ComponentId, { name: string; module: string }> = {
-  'cinematic.hero-reveal': { name: 'HeroReveal', module: '../src/component-library/components/HeroReveal' },
-  'cinematic.video-loop': { name: 'VideoLoop', module: '../src/component-library/components/VideoLoop' },
+  'section.hero': { name: 'Hero', module: '../src/component-library/components/Hero' },
+  'section.full-bleed-video': { name: 'FullBleedVideo', module: '../src/component-library/components/FullBleedVideo' },
   'creator.depth-carousel': { name: 'DepthCarousel', module: '../src/component-library/components/DepthCarousel' },
-  'creator.scroll-marquee': { name: 'ScrollMarquee', module: '../src/component-library/components/ScrollMarquee' },
+  'section.marquee': { name: 'Marquee', module: '../src/component-library/components/Marquee' },
+  'section.footer': { name: 'Footer', module: '../src/component-library/components/Footer' },
   'studio.pricing': { name: 'PricingSection', module: '../src/component-library/components/Pricing' },
   'studio.pricing-card': { name: 'PricingCard', module: '../src/component-library/components/Pricing' },
 }

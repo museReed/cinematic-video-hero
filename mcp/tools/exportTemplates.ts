@@ -14,10 +14,11 @@ function componentTemplate(componentName: string): ExportTemplate {
 }
 
 export const EXPORT_TEMPLATES: Record<ComponentId, ExportTemplate> = {
-  'cinematic.hero-reveal': componentTemplate('HeroReveal'),
-  'cinematic.video-loop': componentTemplate('VideoLoop'),
+  'section.hero': componentTemplate('Hero'),
+  'section.full-bleed-video': componentTemplate('FullBleedVideo'),
   'creator.depth-carousel': componentTemplate('DepthCarousel'),
-  'creator.scroll-marquee': componentTemplate('ScrollMarquee'),
+  'section.marquee': componentTemplate('Marquee'),
+  'section.footer': componentTemplate('Footer'),
   'studio.pricing': (props, children) => {
     const cards = children?.map((child) => child.props) ?? []
     const propsSource = jsxProps(props)

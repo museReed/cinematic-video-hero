@@ -19,18 +19,36 @@ export const allowedImagePathSchema = z
     'Image path must use an allowed local prefix without a protocol or ..',
   )
 
-export const heroRevealPropsSchema = z
+export const safeHrefSchema = z.union([
+  z
+    .string()
+    .url()
+    .refine((value) => URL.canParse(value) && new URL(value).protocol === 'https:', 'External links must use HTTPS'),
+  z
+    .string()
+    .refine(
+      (value) => value.startsWith('#') || (value.startsWith('/') && !value.startsWith('//')),
+      'Link must be an HTTPS URL, anchor, or local path',
+    ),
+])
+
+export const heroPropsSchema = z
   .object({
     eyebrow: z.string().max(40),
     title: z.string().max(80),
+    body: z.string().max(200).optional(),
     ctaLabel: z.string().max(24).optional(),
+    layout: z.enum(['cinematic', 'editorial']).default('cinematic'),
   })
   .strict()
 
-export const videoLoopPropsSchema = z
+export const fullBleedVideoPropsSchema = z
   .object({
     src: allowedVideoUrlSchema,
     caption: z.string().max(80).optional(),
+    focalY: z.number().int().min(-30).max(40).default(0),
+    interaction: z.enum(['none', 'scrub']).default('none'),
+    fallback: z.enum(['radial-glow', 'solid']).default('radial-glow'),
   })
   .strict()
 
@@ -49,11 +67,45 @@ export const depthCarouselPropsSchema = z
   })
   .strict()
 
-export const scrollMarqueePropsSchema = z
+export const marqueePropsSchema = z.discriminatedUnion('content', [
+  z
+    .object({
+      content: z.literal('text'),
+      text: z.string().max(60),
+      speed: z.enum(['slow', 'normal', 'fast']),
+      rows: z.union([z.literal(1), z.literal(2)]).default(2),
+    })
+    .strict(),
+  z
+    .object({
+      content: z.literal('gif-rail'),
+      items: z.array(allowedImagePathSchema).min(2).max(12),
+      speed: z.enum(['slow', 'normal', 'fast']),
+    })
+    .strict(),
+])
+
+const footerLinkSchema = z
   .object({
-    text: z.string().max(60),
-    repeat: z.number().int().min(2).max(8),
-    speed: z.enum(['slow', 'normal', 'fast']),
+    label: z.string().max(24),
+    href: safeHrefSchema,
+  })
+  .strict()
+
+const footerColumnSchema = z
+  .object({
+    heading: z.string().max(24),
+    links: z.array(footerLinkSchema).min(1).max(6),
+  })
+  .strict()
+
+export const footerPropsSchema = z
+  .object({
+    ctaLabel: z.string().max(24),
+    columns: z.array(footerColumnSchema).min(1).max(3),
+    company: z.string().max(40),
+    location: z.string().max(40),
+    bottomCtaLabel: z.string().max(24),
   })
   .strict()
 
@@ -74,8 +126,9 @@ export const pricingCardPropsSchema = z
   })
   .strict()
 
-export type HeroRevealProps = z.infer<typeof heroRevealPropsSchema>
-export type VideoLoopProps = z.infer<typeof videoLoopPropsSchema>
+export type HeroProps = z.input<typeof heroPropsSchema>
+export type FullBleedVideoProps = z.input<typeof fullBleedVideoPropsSchema>
 export type DepthCarouselProps = z.infer<typeof depthCarouselPropsSchema>
-export type ScrollMarqueeProps = z.infer<typeof scrollMarqueePropsSchema>
+export type MarqueeProps = z.input<typeof marqueePropsSchema>
+export type FooterProps = z.infer<typeof footerPropsSchema>
 export type PricingCardProps = z.infer<typeof pricingCardPropsSchema>
