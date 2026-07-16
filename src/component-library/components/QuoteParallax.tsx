@@ -2,6 +2,13 @@ import { Quote } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { QuoteParallaxProps } from '../schemas'
 
+// eslint-disable-next-line react-refresh/only-export-components
+export function getQuoteParallaxOffset(rectTop: number, rectHeight: number, viewportHeight: number) {
+  const progress = (viewportHeight - rectTop) / (viewportHeight + rectHeight)
+  const clampedProgress = Math.min(1, Math.max(0, progress))
+  return (0.5 - clampedProgress) * 200
+}
+
 export function QuoteParallax({ quote, author, companies, portrait }: QuoteParallaxProps) {
   const portraitRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<number | null>(null)
@@ -26,8 +33,7 @@ export function QuoteParallax({ quote, author, companies, portrait }: QuoteParal
     const measure = () => {
       frameRef.current = null
       const rect = portraitNode.getBoundingClientRect()
-      const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height)
-      setOffset(Math.min(200, Math.max(0, progress * 200)))
+      setOffset(getQuoteParallaxOffset(rect.top, rect.height, window.innerHeight))
     }
     const schedule = () => {
       if (frameRef.current !== null) return
@@ -67,12 +73,19 @@ export function QuoteParallax({ quote, author, companies, portrait }: QuoteParal
             <p className="mt-3 text-caption uppercase tracking-widest text-muted-foreground">{companies.join(' · ')}</p>
           ) : null}
         </div>
-        <div ref={portraitRef} className="overflow-hidden rounded-3xl bg-muted" style={{ aspectRatio: 0.8 }}>
+        <div
+          ref={portraitRef}
+          className="overflow-hidden rounded-3xl bg-muted will-change-transform"
+          style={{
+            aspectRatio: 0.8,
+            transform: reducedMotion ? 'none' : `translate3d(0, ${offset * 0.3}px, 0)`,
+          }}
+        >
           <img
             src={portrait}
             alt={`Portrait of ${author}`}
-            className="h-full w-full scale-125 object-cover will-change-transform"
-            style={{ transform: reducedMotion ? 'none' : `translate3d(0, ${offset}px, 0) scale(1.25)` }}
+            className="h-full w-full object-cover will-change-transform"
+            style={{ transform: reducedMotion ? 'none' : `translate3d(0, ${offset}px, 0) scale(1.3)` }}
           />
         </div>
       </div>

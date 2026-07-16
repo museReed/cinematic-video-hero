@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "theme": "studio",
+  "behaviors": [{ "component": "pointer-overlay", "props": { "variant": "cursor" } }],
+  "sections": [
+    {
+      "id": "opening",
+      "component": "section.hero",
+      "props": { "eyebrow": "Studio", "title": "Built to move", "body": "A deliberately small studio bringing product thinking to what comes next.", "ctaLabel": "Start a chat", "layout": "editorial" },
+      "enhancements": [{ "component": "inview-entrance", "props": { "y": 24 } }]
+    },
+    {
+      "id": "rail",
+      "component": "section.marquee",
+      "props": { "content": "text", "text": "Every frame counts", "speed": "normal", "rows": 2 }
+    },
+    {
+      "id": "features",
+      "component": "section.feature-grid",
+      "props": { "badge": "Core Features", "title": "Built for Speed & Quality", "subtitle": "Everything from idea to image" },
+      "children": [
+        { "component": "section.feature-card", "props": { "variant": "prompt", "title": "Smart Prompt Suggestions", "body": "Enhance any prompt in one tap." } },
+        { "component": "section.feature-card", "props": { "variant": "api", "title": "API Access", "body": "Connect the studio to your stack." } },
+        { "component": "section.feature-card", "props": { "variant": "library", "title": "Project Library", "body": "Search every asset you make." } }
+      ]
+    },
+    {
+      "id": "quote",
+      "component": "section.quote-parallax",
+      "props": { "quote": "They shipped in weeks what we scoped for a quarter.", "author": "A. Founder", "companies": ["evr", "Automation", "xPortfolio"], "portrait": "/characters/fluent-astronaut.png" }
+    },
+    {
+      "id": "closing",
+      "component": "section.footer",
+      "props": {
+        "ctaLabel": "Start a chat",
+        "columns": [
+          { "heading": "Explore", "links": [{ "label": "Work", "href": "#work" }, { "label": "About", "href": "#about" }] },
+          { "heading": "Social", "links": [{ "label": "x.com", "href": "https://x.com" }, { "label": "LinkedIn", "href": "https://linkedin.com" }] }
+        ],
+        "company": "Vortex Studio Limited",
+        "location": "Austin, USA",
+        "bottomCtaLabel": "Start a chat"
+      }
+    }
+  ]
+}

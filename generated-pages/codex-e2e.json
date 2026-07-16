@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "theme": "claude2code",
+  "sections": [
+    {
+      "id": "hero",
+      "component": "cinematic.hero-reveal",
+      "props": {
+        "eyebrow": "Atelier No. 27",
+        "title": "Quiet tailoring for a louder point of view",
+        "ctaLabel": "View the collection"
+      }
+    },
+    {
+      "id": "pricing",
+      "component": "studio.pricing",
+      "props": {
+        "heading": "Choose your studio partnership"
+      },
+      "children": [
+        {
+          "component": "studio.pricing-card",
+          "props": {
+            "title": "Essential Edit",
+            "price": "£1,800",
+            "unit": "per collection",
+            "features": [
+              "Creative direction session",
+              "Eight signature looks",
+              "Fit and styling review"
+            ],
+            "dark": true,
+            "ctaLabel": "Book the studio"
+          }
+        },
+        {
+          "component": "studio.pricing-card",
+          "props": {
+            "title": "Signature House",
+            "price": "£3,600",
+            "unit": "per collection",
+            "features": [
+              "Full concept development",
+              "Sixteen custom looks",
+              "Campaign styling support"
+            ],
+            "dark": false,
+            "ctaLabel": "Start a project"
+          }
+        }
+      ]
+    }
+  ]
+}
